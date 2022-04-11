@@ -4,7 +4,8 @@
   "description": "CS 546 Final Project",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,12 @@
   "bugs": {
     "url": "https://github.com/solonglake/cs546_Final_Project/issues"
   },
-  "homepage": "https://github.com/solonglake/cs546_Final_Project#readme"
+  "homepage": "https://github.com/solonglake/cs546_Final_Project#readme",
+  "dependencies": {
+    "bcrypt": "^5.0.0",
+    "express": "^4.17.3",
+    "express-handlebars": "^3.1.0",
+    "handlebars": "^4.7.7",
+    "mongodb": "^4.4.0"
+  }
 }
