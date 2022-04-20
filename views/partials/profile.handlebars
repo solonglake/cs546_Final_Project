@@ -1,0 +1,15 @@
+<article>
+    <h1>{{username}}</h1>
+    <img id="profilePic" src="../../public/imgs/default.png" alt="Profile Picture">
+    <form id="profilePicForm" action="/profile/profilePic" method="POST" hidden>
+        <label for="profilePicInput">Enter link to profile picture</label> <br>
+        <input type="text" name="profilePicInput" id="profilePicInput" autocomplete="off"/> <br>
+        <button type="submit">Submit</button>
+    </form>
+    <form action='/profile/logout' method='GET'>
+        <button type='submit'>Logout</button>
+    </form>
+    <form action='/' method='GET'>
+        <button type='submit'>Home</button>
+    </form>
+</article>

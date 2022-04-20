@@ -1,5 +1,18 @@
 <article>
     <h1>Login</h1>
+    {{#if error}}
+        <p class="error">{{error}}</p>
+    {{/if}}
+    <form id="loginForm" action="/login" method="POST">
+        <label for="username">Enter Username Below</label> <br>
+        <input type="text" name="username" id="username" autocomplete="off"/> <br>
+        <label for="password">Enter Password Below</label> <br>
+        <input type="password" name="password" id="password" autocomplete="off"/> <br>
+        <button type="submit">Login</button>
+    </form>
+    <form action='/signup' method='GET'>
+        <button type='submit'>Need to register? Click here to sign up</button>
+    </form>
     <form action='/' method='GET'>
         <button type='submit'>Home</button>
     </form>

@@ -1,0 +1,16 @@
+<article>
+    <h1>Sign Up</h1>
+    {{#if error}}
+        <p class="error">{{error}}</p>
+    {{/if}}
+    <form id="signupForm" action="/signup" method="POST">
+        <label for="username">Enter Username Below</label> <br>
+        <input type="text" name="username" id="username" autocomplete="off"/> <br>
+        <label for="password">Enter Password Below</label> <br>
+        <input type="password" name="password" id="password" autocomplete="off"/> <br>
+        <button type="submit">Submit</button>
+    </form>
+    <form action='/' method='GET'>
+        <button type='submit'>Home</button>
+    </form>
+</article>
