@@ -3,7 +3,7 @@ const router = express.Router();
 
 router.get('/', async (req, res) => {
     try {
-        res.render('partials/home', { title: 'Split' });
+        res.render('partials/home', { title: 'Split', js: 'home.js' });
     } catch (e) {
         res.sendStatus(500);
     }

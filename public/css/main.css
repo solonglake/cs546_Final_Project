@@ -79,3 +79,8 @@ a:visited {
 a:hover {
 	color: #70161E;
 }
+
+.error {
+	color: #70161E;
+	font-weight: bold;
+}
