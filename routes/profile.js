@@ -52,4 +52,45 @@ router.post('/profilePic', async (req, res) => {
     }
 });
 
+router.post('/bio', async (req, res) => {
+    try {
+        let bioInput = req.body.bioInput;
+        let username = req.session.user.username;
+        let status = await usersData.changeBio(username, bioInput);    
+        res.json(status);
+    } catch (e) {     
+        res.sendStatus(500);
+    }
+});
+
+router.get('/bio', async (req, res) => {
+    try {
+        let username = req.session.user.username;
+        let bio = await usersData.getBio(username);    
+        res.json(bio);
+    } catch (e) {
+        res.sendStatus(500);
+    }
+});
+
+router.get('/posts', async (req, res) => {
+    try {
+        let username = req.session.user.username;
+        let posts = await usersData.getPosts(username);  
+        res.json(posts);
+    } catch (e) {
+        res.sendStatus(500);
+    }
+});
+
+router.get('/runs', async (req, res) => {
+    try {
+        let username = req.session.user.username;
+        let runs = await usersData.getRuns(username);    
+        res.json(runs);
+    } catch (e) {
+        res.sendStatus(500);
+    }
+});
+
 module.exports = router;
