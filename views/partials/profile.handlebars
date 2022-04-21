@@ -9,6 +9,15 @@
     </form>
     <h2>Bio</h2>
     <p id="bio">No bio yet</p>
+    <form id="bioForm" action="/profile/bio" method="POST" hidden>
+        <label for="bioInput">Enter new bio</label> <br>
+        <input type="text" name="bioInput" id="bioInput" autocomplete="off"/> <br>
+        <button type="submit">Submit</button>
+    </form>
+    <h2>Posts</h2>
+    <div id="postsDiv"></div>
+    <h2>Runs</h2>
+    <div id="runsDiv"></div>
     <form id="helpForm">
         <button type='submit'>Help</button>
     </form>

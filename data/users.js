@@ -103,6 +103,72 @@ let exportedMethods = {
         return {authenticated: true};
     },
 
+    async changeBio(username, bio){
+        // input format checking
+        if(!username){
+            throw 'Username must be supplied!';
+        }
+        if(typeof(username) != 'string'){
+            throw 'Username must be a string!';
+        }
+        username = username.trim();
+        if(username.length < 4){
+            throw 'Username must atleast 4 characters long!';
+        }
+        if(username.indexOf(' ') != -1){
+            throw 'Username cannot contain spaces!';
+        }
+        if(username.match(/^[0-9A-Za-z]+$/) === null){
+            throw 'Username must only use alphanumeric characters!';
+        }
+        username = username.toLowerCase();
+        bio = bio.trim();
+        if(bio.length === 0){
+            throw 'Bio must not be empty!';
+        }
+
+        // update user with new bio
+        const usersCollection = await users();
+        const user = await usersCollection.findOne({username: username});
+        if(user === null){
+            throw 'User with supplied username does not exist!';
+        }
+        usersCollection.updateOne(
+            { username: username }, 
+            { '$set': {bio: bio } }
+        );
+        return {success: true};
+    },
+
+    async getBio(username){
+        // input format checking
+        if(!username){
+            throw 'Username must be supplied!';
+        }
+        if(typeof(username) != 'string'){
+            throw 'Username must be a string!';
+        }
+        username = username.trim();
+        if(username.length < 4){
+            throw 'Username must atleast 4 characters long!';
+        }
+        if(username.indexOf(' ') != -1){
+            throw 'Username cannot contain spaces!';
+        }
+        if(username.match(/^[0-9A-Za-z]+$/) === null){
+            throw 'Username must only use alphanumeric characters!';
+        }
+        username = username.toLowerCase();
+
+        // get profilePic of user with supplied username
+        const usersCollection = await users();
+        const user = await usersCollection.findOne({username: username});
+        if(user === null){
+            throw 'User with supplied username does not exist!';
+        }
+        return {bio: user.bio};
+    },
+
     async changeProfilePic(username, link){
         // input format checking
         if(!username){
@@ -131,7 +197,7 @@ let exportedMethods = {
         const usersCollection = await users();
         const user = await usersCollection.findOne({username: username});
         if(user === null){
-            throw 'Either the username or password is invalid';
+            throw 'User with supplied username does not exist!';
         }
         usersCollection.updateOne(
             { username: username }, 
@@ -164,9 +230,67 @@ let exportedMethods = {
         const usersCollection = await users();
         const user = await usersCollection.findOne({username: username});
         if(user === null){
-            throw 'Either the username or password is invalid';
+            throw 'User with supplied username does not exist!';
         }
         return {link: user.profilePic};
+    },
+
+    async getPosts(username){
+        // input format checking
+        if(!username){
+            throw 'Username must be supplied!';
+        }
+        if(typeof(username) != 'string'){
+            throw 'Username must be a string!';
+        }
+        username = username.trim();
+        if(username.length < 4){
+            throw 'Username must atleast 4 characters long!';
+        }
+        if(username.indexOf(' ') != -1){
+            throw 'Username cannot contain spaces!';
+        }
+        if(username.match(/^[0-9A-Za-z]+$/) === null){
+            throw 'Username must only use alphanumeric characters!';
+        }
+        username = username.toLowerCase();
+
+        // get profilePic of user with supplied username
+        const usersCollection = await users();
+        const user = await usersCollection.findOne({username: username});
+        if(user === null){
+            throw 'User with supplied username does not exist!';
+        }
+        return {posts: user.posts};
+    },
+
+    async getRuns(username){
+        // input format checking
+        if(!username){
+            throw 'Username must be supplied!';
+        }
+        if(typeof(username) != 'string'){
+            throw 'Username must be a string!';
+        }
+        username = username.trim();
+        if(username.length < 4){
+            throw 'Username must atleast 4 characters long!';
+        }
+        if(username.indexOf(' ') != -1){
+            throw 'Username cannot contain spaces!';
+        }
+        if(username.match(/^[0-9A-Za-z]+$/) === null){
+            throw 'Username must only use alphanumeric characters!';
+        }
+        username = username.toLowerCase();
+
+        // get profilePic of user with supplied username
+        const usersCollection = await users();
+        const user = await usersCollection.findOne({username: username});
+        if(user === null){
+            throw 'User with supplied username does not exist!';
+        }
+        return {runs: user.runs};
     }
 };
 

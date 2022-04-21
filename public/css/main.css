@@ -52,6 +52,13 @@ input {
 	font-size: 18pt;
 	margin: 10px 10px 10px 0px;
 }
+div {
+	border: 5px solid #1C3144;
+	padding: 5px 10px;
+	background: #7EA16B;
+	margin-top: 0px;
+	margin-bottom: 5px;
+}
 
 label {
 	font-weight: bold;
