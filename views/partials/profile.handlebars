@@ -1,11 +1,22 @@
 <article>
     <h1>{{username}}</h1>
+    <p class="error" id="profileError" hidden></p>
     <img id="profilePic" src="../../public/imgs/default.png" alt="Profile Picture">
     <form id="profilePicForm" action="/profile/profilePic" method="POST" hidden>
         <label for="profilePicInput">Enter link to profile picture</label> <br>
         <input type="text" name="profilePicInput" id="profilePicInput" autocomplete="off"/> <br>
         <button type="submit">Submit</button>
     </form>
+    <h2>Bio</h2>
+    <p id="bio">No bio yet</p>
+    <form id="helpForm">
+        <button type='submit'>Help</button>
+    </form>
+    <p id="help" hidden>
+        To change your profile picture click on your current profile picture and fill out the form by supplying
+        a link to an image hosted on the internet. To change your bio click on your current bio and fill out the form
+        by supplying a new bio. Click help once again to hide this message.
+    </p>
     <form action='/profile/logout' method='GET'>
         <button type='submit'>Logout</button>
     </form>
