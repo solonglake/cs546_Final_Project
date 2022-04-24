@@ -11,9 +11,39 @@ router.get('/', async (req, res) => {
     }
 });
 
+router.get('/:id', async (req, res) => {
+    try {
+        // id checking
+        if(typeof req.params.id != 'string'){
+            res.status(400).json({ error: 'Id must be a string!' });
+            return;
+        }
+        req.params.id = req.params.id.trim();
+        if(req.params.id.length === 0){
+            res.status(400).json({ error: 'Id must not be an empty string!' });
+            return;
+        }
+        
+        // load confirmation page
+        try {
+            const result = await usersData.verifyUser(req.params.id);
+            if(result.username){
+                res.render('partials/verify', { title: 'Account Confimed', username: result.username});
+            } else {
+                res.status(500).json({ error: 'Internal Server Error' });
+            }
+        } catch (e) {
+            res.status(400).json({ error: e });
+        }
+    } catch (e) {
+        res.sendStatus(500);
+    }
+});
+
 router.post('/', async (req, res) => {
     try {
         // input checking
+        let email = req.body.email;
         let username = req.body.username;
         let password = req.body.password;
         if(!username){
@@ -22,6 +52,10 @@ router.post('/', async (req, res) => {
         }
         if(!password){
             res.status(400).render('partials/signup', { title: 'Sign Up', error: 'Password not supplied!' });
+            return;
+        }
+        if(!email){
+            res.status(400).render('partials/signup', { title: 'Sign Up', error: 'Email not supplied!' });
             return;
         }
         if(typeof(username) != 'string'){
@@ -55,28 +89,35 @@ router.post('/', async (req, res) => {
             res.status(400).render('partials/signup', { title: 'Sign Up', error: 'Password cannot contain spaces!' });
             return;
         }
+        let invalidEmail = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+        email = email.trim();
+        email = email.toLowerCase();
+        if(typeof(email) != 'string'){
+            res.status(400).render('partials/signup', { title: 'Sign Up', error: 'Email must be a string!' });
+            return;
+        }
+        if(email.length < 1){
+            res.status(400).render('partials/signup', { title: 'Sign Up', error: 'Must enter a valid Email!' });
+            return;
+        }
+        if(email.match(invalidEmail) === null){
+            res.status(400).render('partials/signup', { title: 'Sign Up', error: 'Invalid Email Format!' });
+            return;
+        }
 
         // database call and rendering
         try {
-            const result = await usersData.createUser(username, password);
+            const result = await usersData.createUser(username, password, email);
             if(result.userInserted){
-                res.redirect('/login');
+                res.render('partials/unverified', { title: 'Verify Your Account', username: username});
             } else {
                 res.status(500).json({ error: 'Internal Server Error' });
             }
         } catch (e) {
-            res.status(400).render('partials/signup', { title: 'Sign Up', error: e });
+            res.status(400).render('partials/signup', { title: 'Sign Up', error: 'Could not send email to that address!' });
         }       
     } catch (e) {
         res.sendStatus(500).json({ error: 'Internal Server Error' });
-    }
-});
-
-router.get('/', async (req, res) => {
-    try {
-        res.render('partials/signup', { title: 'Sign Up' });
-    } catch (e) {
-        res.sendStatus(500);
     }
 });
 

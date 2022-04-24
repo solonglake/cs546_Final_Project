@@ -2,9 +2,11 @@ const mongoCollections = require('../config/mongoCollections');
 const {ObjectId} = require('mongodb');
 const users = mongoCollections.users;
 const bcrypt = require('bcrypt');
+const nodemailer = require('nodemailer');
+const secret = require('../.git/secret');
 
 let exportedMethods = {
-    async createUser(username, password){
+    async createUser(username, password, email){
         // input format checking
         if(!username){
             throw 'Username must be supplied!';
@@ -36,6 +38,18 @@ let exportedMethods = {
         if(password.indexOf(' ') != -1){
             throw 'Password cannot contain spaces!';
         }
+        let invalidEmail = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+        email = email.trim();
+        email = email.toLowerCase();
+        if(typeof(email) != 'string'){
+            throw 'Email must be a string!';
+        }
+        if(email.length < 1){
+            throw 'Must enter a valid Email!';
+        }
+        if(email.match(invalidEmail) === null){
+            throw 'Invalid Email Format!';
+        }
 
         // check if username already exists in the database
         const usersCollection = await users();
@@ -44,11 +58,44 @@ let exportedMethods = {
             throw 'Already user with the supplied username!';
         }
 
+        // compute random token for new user
+        const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        let token = '';
+        for (let i=0; i<25; i++) {
+            token += characters[Math.floor(Math.random() * characters.length)];
+        }
+
+        // create transport for node mailer
+        let transport = nodemailer.createTransport({
+            service: "Yahoo",
+            auth: {
+              user: secret.user,
+              pass: secret.pass,
+            },
+        });
+
+        // send email
+        let info = await transport.sendMail({
+            from: secret.user,
+            to: email,
+            subject: 'Please confirm your account',
+            html: 
+            `<h1>Email Confirmation</h1>
+            <h2>Hello ${username}</h2>
+            <p>Thank you for signing up for Split. Please confirm your email by clicking on the following link</p>
+            <a href=http://localhost:3000/signup/${token}>Click here</a>
+            <p>We hope to see your incredible speedruns soon!
+            </div>`
+        });
+
         // hash password and add user to database
         const hashedPassword = await bcrypt.hash(password, 16);
         let newUser = {
             username: username,
-            password: hashedPassword
+            password: hashedPassword,
+            email: email,
+            token, token,
+            status: 'pending'
         };
         const insertInfo = await usersCollection.insertOne(newUser);
         if(insertInfo.insertedCount === 0){
@@ -100,7 +147,36 @@ let exportedMethods = {
         if(!matching){
             throw 'Either the username or password is invalid';
         }
+        if(user.status == 'pending'){
+            throw 'Pending Account. Please Verify Your Email!';
+        }
         return {authenticated: true};
+    },
+
+    async verifyUser(token){
+        // input format checking
+        if(!token){
+            throw 'Token must be supplied!';
+        }
+        if(typeof(token) != 'string'){
+            throw 'Token must be a string!';
+        }
+        token = token.trim();
+        if(token === 0){
+            throw 'Token must not be an empty string!';
+        }
+        
+        // get user and change status
+        const usersCollection = await users();
+        const user = await usersCollection.findOne({token: token});
+        if(user === null){
+            throw 'User with supplied username does not exist!';
+        }
+        usersCollection.updateOne(
+            { token: token }, 
+            { '$set': {status: 'active' } }
+        );
+        return {username: user.username};
     },
 
     async changeBio(username, bio){
