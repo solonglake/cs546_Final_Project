@@ -4,6 +4,8 @@
         <p class="error">{{error}}</p>
     {{/if}}
     <form id="signupForm" action="/signup" method="POST">
+        <label for="username">Enter Email Below</label> <br>
+        <input type="email" name="email" id="email" autocomplete="off"/> <br>
         <label for="username">Enter Username Below</label> <br>
         <input type="text" name="username" id="username" autocomplete="off"/> <br>
         <label for="password">Enter Password Below</label> <br>
