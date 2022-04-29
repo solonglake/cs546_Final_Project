@@ -60,47 +60,7 @@ let exportedMethods = {
         }
 
 
-    },
-
-    async changeRunsArray(gameName, runs){
-        // input format checking
-        if(!gameName){
-            throw 'gameName must be supplied!';
-        }
-        if(typeof(gameName) != 'string'){
-            throw 'gameName must be a string!';
-        }
-        gameName = gameName.trim();
-        if(gameName.length < 4){
-            throw 'Username must atleast 4 characters long!';
-        }
-        if(gameName.indexOf(' ') != -1){
-            throw 'Username cannot contain spaces!';
-        }
-        if(gameName.match(/^[0-9A-Za-z]+$/) === null){
-            throw 'Username must only use alphanumeric characters!';
-        }
-        gameName = gameName.toLowerCase();
-        if(runs.length === 0){
-            throw 'runs must not be empty!';
-        }
-
-        // update user with new bio
-        const usersCollection = await users();
-        const user = await usersCollection.findOne({username: username});
-        if(user === null){
-            throw 'User with supplied username does not exist!';
-        }
-        usersCollection.updateOne(
-            { username: username }, 
-            { '$set': {bio: bio } }
-        );
-        return {success: true};
-    },
-
-    
-        return {runs: user.runs};
     }
-};
+}
 
 module.exports = exportedMethods;
