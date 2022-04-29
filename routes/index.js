@@ -9,7 +9,7 @@ const profileRoutes = require('./profile');
 const constructorMethod = (app) => {
     app.use('/login', loginRoutes);
     app.use('/signup', signupRoutes);
-    app.use('/games', gamesRoutes);
+    //app.use('/games', gamesRoutes);
     app.use('/forums', forumsRoutes);
     app.use('/profile', profileRoutes);
     app.use('/authenticated', authenticatedRoutes);

@@ -151,5 +151,4 @@
                 profileError.show();
             }
         });
-    })(window.jQuery);
 })(window.jQuery);
