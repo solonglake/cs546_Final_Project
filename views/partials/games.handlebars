@@ -1,6 +1,13 @@
 <article>
     <h1>Games</h1>
-    <form action='/' method='GET'>
-        <button type='submit'>Home</button>
+    <ul id="allGames">
+
+    </ul>
+    <img id="gamePic" src="../../public/imgs/add.png">
+    <form id="gamePicForm" action="/games/gamesPic" method="POST" hidden>
+        <label for="gamePicInput">Enter link to game picture</label> <br>
+        <input type="text" name="gamePicInput" id="gamePicInput" autocomplete="off"/> <br>
+        <button type="submit">Submit</button>
     </form>
-</article>
+    </div>
+    </article>
