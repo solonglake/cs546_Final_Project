@@ -58,8 +58,11 @@ let exportedMethods = {
         if(game == null){
             throw "This game Doesn't exist";
         }
-
-
+    },
+    async getAllGames() {
+        const gamesCollection = await games();
+        const game = await gamesCollection.find();
+        return game;
     }
 }
 
