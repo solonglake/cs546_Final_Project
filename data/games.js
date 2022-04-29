@@ -1,120 +1,69 @@
-// this function runs whenever the games handlebars file is loaded
-(async function ($) {
-    // the unordered list of games
-    let games = $('#allGames');
-    // the add game button
-    let adder = $('#gamePic');
+const mongoCollections = require('../config/mongoCollections');
+const {ObjectId} = require('mongodb');
+const users = mongoCollections.users;
+const games = mongoCollections.games;
+const bcrypt = require('bcrypt');
 
-    let status = await $.ajax({
-        url: '/authenticated',
-        type: 'Post'
-    });
-    if(status.authenticated){
-        adder.show();
-    } else {
-        adder.hide();
+let exportedMethods = {
+    async createGame(gameName, gameImage){
+        // input format checking
+        if(!gameName){
+            throw 'gameName must be supplied!';
+        }
+        if(!gameImage){
+            throw 'Game Image must be supplied!';
+        }
+        if(typeof(gameName) != 'string'){
+            throw 'gameName must be a string!';
+        }
+        gameName = gameName.trim();
+        if(gameName.length < 1){
+            throw 'gameName must atleast 2 characters long!';
+        }
+        if(gameName.match(/^[0-9A-Za-z]+$/) === null){
+            throw 'gameName must only use alphanumeric characters!';
+        }
+        gameName = gameName.toLowerCase();
+        
+        let res = gameImage.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
+        if(res === null){
+            throw 'Supplied link is not valid!';
+        }
+        // check if game already exists in the database
+        const gamesCollection = await games();
+        const game = await gamesCollection.findOne({name: gameName});
+        if(game != null){
+            throw 'This game already exists';
+        }
+        //we can check for the image too but that seems unUseful
+        // actually add the game
+        const insertInfo = await gameCollectiion.insertOne({'name':gameName, 'gameImage': gameImage, 'runs':[]});
+        if(insertInfo.insertedCount === 0){
+            throw 'Could add game!';
+        }
+        return {userInserted: true};
+    },
+    async getGame(gameImage) {
+        //search by gameImage since it will be imbedded in teh buttons
+        if(!gameImage){
+            throw 'Game Image must be supplied!';
+        }
+        let res = gameImage.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
+        if(res === null){
+            throw 'Supplied link is not valid!';
+        }
+        // check if game already exists in the database
+        const gamesCollection = await games();
+        const game = await gamesCollection.findOne({'gameImage': gameImage});
+        if(game == null){
+            throw "This game Doesn't exist";
+        }
+    },
+    async getAllGames() {
+        const gamesCollection = await games();
+        const game = await gamesCollection.find();
+        return game;
     }
+}
 
-    let all = await $ajax({
-        url: '/games/getAll',
-        type: 'Get'
-    });
-    for (let x in all) {
-        let temp = '<li>' + x.gameImage + '</li>'
-        games.append(temp);
-    }
-
-        // load users profile picture
-        const link = await $.ajax({
-            url: '/profile/profilePic',
-            type: 'Get'
-        });
-        if(link.link){
-            profilePic.attr("src", link.link);
-        }
-    
-        // load users bio
-        const userBio = await $.ajax({
-            url: '/profile/bio',
-            type: 'Get'
-        });
-        if(userBio.bio){
-            bio.text(userBio.bio);
-        }
-    
-        // load users posts
-        const posts = await $.ajax({
-            url: '/profile/posts',
-            type: 'Get'
-        });
-        if(posts.posts){
-            console.log('work in progress');
-        } else {
-            postsDiv.text('No posts yet');
-        }
-    
-        // load users runs
-        const runs = await $.ajax({
-            url: '/profile/runs',
-            type: 'Get'
-        });
-        if(runs.runs){
-            console.log('work in progress');
-        } else {
-            runsDiv.text('No runs yet');
-        }
-    
-        // profile pic click function
-        profilePic.click(function() {
-            profilePicForm.show();
-        });
-    
-        // bio click function
-        bio.click(function() {
-            bioForm.show();
-        });
-    
-        // help button submit form action
-        helpForm.submit(async function (event) {
-            event.preventDefault();
-            if(help.is(":visible")) {
-                help.hide();
-            } else {
-                help.show();
-            }
-        });
-    
-        // profile pic form submit action
-        profilePicForm.submit(async function (event) {
-            event.preventDefault();
-            let data = { profilePicInput: profilePicInput.val() };
-            profilePicForm[0].reset()
-            profilePicForm.hide(); 
-    
-            // profilePicInput validation
-            let validInput = true;
-            let res = data.profilePicInput.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
-            if(res === null){
-                validInput = false;
-            }
-    
-            // if profilePicInput is valid then make the ajax request to /profile/profilePic route
-            if(validInput){
-                profileError.hide();
-                const status = await $.ajax({
-                    url: '/profile/profilePic',
-                    type: 'Post',
-                    data: data
-                });
-                if(status.success){
-                    profilePic.attr("src", data.profilePicInput);
-                } else {
-                    profileError.text('Could not update profile picture with supplied link!');
-                    profileError.show();
-                }
-            } else {
-                profileError.text('Supplied link is not valid!');
-                profileError.show();
-            }
-        });
-})(window.jQuery);
+module.exports = exportedMethods;
