@@ -1,0 +1,60 @@
+const mongoCollections = require('../config/mongoCollections');
+const {ObjectId} = require('mongodb');
+const games = mongoCollections.games;
+
+let exportedMethods = {
+    async createGame(gameImage, gameName){
+        // input format checking
+        if(!gameName){
+            throw 'gameName must be supplied!';
+        }
+        if(!gameImage){
+            throw 'Game Image must be supplied!';
+        }
+        if(typeof(gameName) != 'string'){
+            throw 'gameName must be a string!';
+        }
+        gameName = gameName.trim();
+        if(gameName.length < 1){
+            throw 'gameName must atleast 1 characters long!';
+        }
+        if(gameName.match(/^[0-9A-Za-z]+$/) === null){
+            throw 'gameName must only use alphanumeric characters!';
+        }
+        gameName = gameName.toLowerCase();
+        
+        let res = gameImage.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
+        if(res === null){
+            throw 'Supplied link is not valid!';
+        }
+
+        // check if game already exists in the database
+        const gamesCollection = await games();
+        const game = await gamesCollection.findOne({name: gameName});
+        if(game != null){
+            throw 'This game already exists';
+        }
+
+        // actually add the game
+        let newGame = {
+            name: gameName,
+            gamePic: gameImage
+        };
+        const insertInfo = await gamesCollection.insertOne(newGame);
+        if(insertInfo.insertedCount === 0){
+            throw 'Could not add game!';
+        }
+        return {success: true};
+    },
+
+    async getAllGames() {
+        const gamesCollection = await games();
+        const gamesList = await gamesCollection.find({}).toArray();
+        if (!gamesList){
+            throw 'Could not get all games';
+        }
+        return gamesList;
+    }
+}
+
+module.exports = exportedMethods;
