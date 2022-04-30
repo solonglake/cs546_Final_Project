@@ -35,8 +35,10 @@
         url: '/profile/posts',
         type: 'Get'
     });
-    if(posts.posts){
-        console.log('work in progress');
+    if(posts){
+        for(id in posts){
+            $("#postsDiv").append(`<div><h2>${posts[id].title}</h2><p>${posts[id].body}</p></div>`);
+        }
     } else {
         postsDiv.text('No posts yet');
     }

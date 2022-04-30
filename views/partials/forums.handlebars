@@ -1,6 +1,28 @@
 <article>
     <h1>Forums</h1>
+    <p class="error" id="forumError" hidden></p>
     <form action='/' method='GET'>
         <button type='submit'>Home</button>
     </form>
+
+    <div id="postList">
+        Posts
+    </div>
+
+    <div>
+        Make New Post
+        <p id="unverified-forumPost">
+            You Must Be Logged In To Make A Forum Post.
+        </p>
+
+        <form id="verified-forumPost" action="/newPost" method="POST">
+            <label for="postTitle">Title</label> <br>
+            <input type="text" id="postTitle" name="postTitle"> <br>
+            
+            <label for="postBody">Description</label> <br>
+            <input type="text" id="postBody" name="postBody"> <br>
+            <input type="text" id="postUser" name="postUser" value="{{username}}" hidden>
+            <button type="submit" class="btn">Post</button>
+        </form>
+    </div>
 </article>
