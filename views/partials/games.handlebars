@@ -1,28 +1,16 @@
 <article>
     <h1>Games</h1>
-    <div id="normalGames">
-    <ul id="allGames">
-
-    </ul>
-    <img id="gamePic" src="../../public/imgs/add.png">
-    <form id="gamePicForm" action="/games/gamesPic" method="POST" hidden>
+    <p class="error" id="gamesError" hidden></p>
+    <ul id="gamesList"></ul>
+    <img id="addGamePic" src="../../public/imgs/add.png" hidden>
+    <form id="addGameForm" action="/games/add" method="POST" hidden>
         <label for="gamePicInput">Enter link to game picture</label> <br>
         <input type="text" name="gamePicInput" id="gamePicInput" autocomplete="off"/> <br>
-        <button type="submit">Submit</button>
-    </form>
-    </div>
-    <div id="adding" hidden>
-        <form id="addGameForm" action="/games/add" method="POST">
-        <label for="gamePicInput">Add A game Picture</label> <br>
-        <input type="text" name="gamePicInput" id="profilePicInput" autocomplete="off"/> <br>
-        <label for="gameNameInput">Enter the name ofthe game</label> <br>
+        <label for="gameNameInput">Enter name of the game</label> <br>
         <input type="text" name="gameNameInput" id="gameNameInput" autocomplete ="off" <br>
         <button type="submit">Submit</button>
     </form>
-    </div>
-    <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
-        crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
-        crossorigin="anonymous"></script>
-    <script src="/public/js/games.js"></script>
-    </article>
+    <form action='/' method='GET'>
+        <button type='submit'>Home</button>
+    </form>
+</article>
