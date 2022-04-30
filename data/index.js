@@ -1,3 +1,4 @@
 module.exports = {
-    users: require('./users')
+    users: require('./users'),
+    forums: require('./forums')
 };
