@@ -4,10 +4,9 @@
     let unverified = $('#unverified-forumPost');
     let forumPostForm = $('#verified-forumPost');
     let forumError = $('#forumError');
-    let postList = $('#postList');
     let postTitle = $('#postTitle');
     let postBody = $('#postBody');
-
+    let postUser = $('#postUser');
     //Determines if form can be shown based on the users authentification
     let status = await $.ajax({
         url: '/authenticated',
@@ -34,11 +33,9 @@
         event.preventDefault();
         let data = { 
             postTitle: postTitle.val(),
-            postBody: postBody.val()
+            postBody: postBody.val(),
+            postUser: postUser.val()
         };
-
-        console.log(data.postBody);
-        console.log(data.postTitle);
         // FormPost validation
         if(!data.postTitle){
             alert("ERROR: Please provide a title to your forum post.");
@@ -52,7 +49,7 @@
                 data: data
             });
             if(status.postInserted){
-                $("#postList").append(`<div><h2>${posts[id].title} by <a href=/profile/${posts[id].username}>${posts[id].username}</a></h2><p>${posts[id].body}</p></div>`);
+                $("#postList").append(`<div><h2>${data.postTitle} by <a href=/profile/${data.postUser}>${data.postUser}</a></h2><p>${data.postBody}</p></div>`);
             }
             else{
                 forumError.text('Could not upload new forum post!');

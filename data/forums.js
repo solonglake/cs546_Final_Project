@@ -54,15 +54,20 @@ let exportedMethods = {
         throw 'Could not add post!';
     }
      //Insert PostId Into User Database
+     //Check if user has posts property, if not make it
     const postId = insertInfo.insertedId.toString();
     let posts = user.posts;
-    console.log(user);
-    posts.push(postId);
-    user.posts = posts;
+    if(posts){
+        posts.push(postId);
+    } else {
+        posts = [postId];
+    }
+    
     usersCollection.updateOne(
         { username: username }, 
-        { '$set': {posts: user.posts} }
+        { '$set': {posts: posts} }
     );
+
     return {postInserted: true};
  },
  async getAll(){

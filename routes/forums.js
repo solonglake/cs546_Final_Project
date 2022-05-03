@@ -5,7 +5,11 @@ const forumsData = data.forums;
 
 router.get('/', async (req, res) => {
     try {
-        res.render('partials/forums', { title: 'Forums',js: 'forums.js'});
+        if(req.session.user) {
+            res.render('partials/forums', { title: 'Forums',js: 'forums.js',username: req.session.user.username});
+        } else {
+            res.render('partials/forums', { title: 'Forums',js: 'forums.js'});
+        }
     } catch (e) {
         res.sendStatus(500);
     }
@@ -33,13 +37,11 @@ router.post('/newPost', async (req, res) => {
         let status;
         if(postTitle.trim().length == 0) status = {postInserted: false};
         if(postBody.trim().length == 0) status = {postInserted: false};
-        console.log("Checkmark 1");
         try{
         status = await forumsData.createPost(postTitle, postBody,username);    
         } catch(e){
-            console.log(e);
+            res.sendStatus(500);
         }
-        console.log("Checkmark 2");
         res.json(status);
     } catch (e) {     
         res.sendStatus(500);
