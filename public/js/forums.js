@@ -36,7 +36,6 @@
             postBody: postBody.val(),
             postUser: postUser.val()
         };
-        console.log(data.postUser);
         // FormPost validation
         if(!data.postTitle){
             alert("ERROR: Please provide a title to your forum post.");
