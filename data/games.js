@@ -38,7 +38,8 @@ let exportedMethods = {
         // actually add the game
         let newGame = {
             name: gameName,
-            gamePic: gameImage
+            gamePic: gameImage,
+            runs: []
         };
         const insertInfo = await gamesCollection.insertOne(newGame);
         if(insertInfo.insertedCount === 0){
