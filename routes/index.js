@@ -5,6 +5,7 @@ const gamesRoutes = require('./games');
 const forumsRoutes = require('./forums');
 const authenticatedRoutes = require('./authenticated');
 const profileRoutes = require('./profile');
+const profileVisitRoutes = require('./profileVisit');
 
 const constructorMethod = (app) => {
     app.use('/login', loginRoutes);
@@ -12,6 +13,7 @@ const constructorMethod = (app) => {
     app.use('/games', gamesRoutes);
     app.use('/forums', forumsRoutes);
     app.use('/profile', profileRoutes);
+    app.use('/profileVisit', profileVisitRoutes);
     app.use('/authenticated', authenticatedRoutes);
     app.use('/', homeRoutes);
 
