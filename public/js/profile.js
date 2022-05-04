@@ -35,7 +35,7 @@
         url: '/profile/posts',
         type: 'Get'
     });
-    if(posts){
+    if(posts && posts.length > 0){
         for(id in posts){
             $("#postsDiv").append(`<div><h2>${posts[id].title}</h2><p>${posts[id].body}</p></div>`);
         }
@@ -48,7 +48,7 @@
         url: '/profile/runs',
         type: 'Get'
     });
-    if(runs.runs){
+    if(runs.run && runs.runs.length > 0){
         console.log('work in progress');
     } else {
         runsDiv.text('No runs yet');

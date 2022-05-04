@@ -105,6 +105,7 @@ let exportedMethods = {
         }
         return {userInserted: true};
     },
+
     async getUsername(id){
         if (!id) throw 'ID must be supplied!';
         if (typeof id !== 'string') throw 'ID must be a string';
@@ -117,6 +118,7 @@ let exportedMethods = {
         if (user === null) throw 'No User exists with this ID';
         return user.username;
     },
+
     async checkUser(username, password){
         // input format checking
         if(!username){
@@ -380,6 +382,35 @@ let exportedMethods = {
             throw 'User with supplied username does not exist!';
         }
         return {runs: user.runs};
+    },
+
+    async checkUsername(username){
+        // input format checking
+        if(!username){
+            throw 'Username must be supplied!';
+        }
+        if(typeof(username) != 'string'){
+            throw 'Username must be a string!';
+        }
+        username = username.trim();
+        if(username.length < 4){
+            throw 'Username must atleast 4 characters long!';
+        }
+        if(username.indexOf(' ') != -1){
+            throw 'Username cannot contain spaces!';
+        }
+        if(username.match(/^[0-9A-Za-z]+$/) === null){
+            throw 'Username must only use alphanumeric characters!';
+        }
+        username = username.toLowerCase();
+
+        // check if user exists
+        const usersCollection = await users();
+        const user = await usersCollection.findOne({username: username});
+        if(user === null){
+            throw 'User with supplied username does not exist!';
+        }
+        return {success: true};
     }
 };
 
