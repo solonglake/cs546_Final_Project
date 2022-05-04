@@ -54,7 +54,28 @@ let exportedMethods = {
             throw 'Could not get all games';
         }
         return gamesList;
+    },
+    async getGame(name) {
+        if(!name) throw 'Game name must be supplied!';
+        if(typeof(name) != 'string') throw 'Game ID  must be a string!';   
+        name = name.trim();
+        if(name.length == 0){
+            throw 'Game name must be nonempty!';
+        }
+        if(name.length == 0){
+            throw 'Game Name  must be nonempty!';
+        }
+        if(name.match(/^[0-9A-Za-z]+$/) === null){
+            throw 'Game name must only use alphanumeric characters!';
+        }
+        //Make Database Query For Matching PostID
+        const gamesCollection = await games();
+        const game = await gamesCollection.findOne({ name: name });
+        if (game === null) throw `Could not find game with name of ${name}`;
+
+        return {success: true};
     }
+
 }
 
 module.exports = exportedMethods;
