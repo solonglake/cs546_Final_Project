@@ -26,7 +26,7 @@
 
     //Appends All Posts Into postList Div
     for(id in posts){
-        $("#postList").append(`<div><h2>${posts[id].title} by <a href=/profile/${posts[id].username}>${posts[id].username}</a></h2><p>${posts[id].body}</p></div>`);
+        $("#postList").append(`<a href=/forums/posts/${posts[id]._id}><div><h2>${posts[id].title} by <a href=/profile/${posts[id].username}>${posts[id].username}</a></h2><p class="body">${posts[id].body}</p></div></a>`);
     }
     //Forum Post Form Submit Action
     forumPostForm.submit(async function (event) {
@@ -49,7 +49,17 @@
                 data: data
             });
             if(status.postInserted){
-                $("#postList").append(`<div><h2>${data.postTitle} by <a href=/profile/${data.postUser}>${data.postUser}</a></h2><p>${data.postBody}</p></div>`);
+                $("#postList").empty();
+        //Pulls All Posts In The Database
+                let posts = await $.ajax({
+                    url: '/forums/posts',
+                    type: 'Get'
+                });
+
+        //Appends All Posts Into postList Div
+                for(id in posts){
+                    $("#postList").append(`<a href=/forums/posts/${posts[id]._id}><div><h2>${posts[id].title} by <a href=/profile/${posts[id].username}>${posts[id].username}</a></h2><p class="body">${posts[id].body}</p></div></a>`);
+                }
             }
             else{
                 forumError.text('Could not upload new forum post!');
