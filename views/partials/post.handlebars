@@ -1,10 +1,6 @@
 <article>
     <h1>Forums</h1>
     <p class="error" id="postError" hidden></p>
-    <form action='/' method='GET'>
-        <button type='submit'>Home</button>
-    </form>
-
     <div>
         <h2>{{post.title}} by <a href="/profile/{{postUser}}">{{postUser}}</a></h2>
         <p>{{post.body}}</p>  
@@ -44,5 +40,8 @@
     </div>
     <form action='/forums' method='GET'>
         <button type='submit'>Back to Posts Page</button>
+    </form>
+    <form action='/' method='GET'>
+        <button type='submit'>Home</button>
     </form>
 </article>

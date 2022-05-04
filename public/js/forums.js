@@ -26,7 +26,7 @@
 
     //Appends All Posts Into postList Div
     for(id in posts){
-        $("#postList").append(`<a href=/forums/posts/${posts[id]._id}><div><h2>${posts[id].title} by <a href=/profile/${posts[id].username}>${posts[id].username}</a></h2><p class="body">${posts[id].body}</p></div></a>`);
+        $("#postList").append(`<a href=/forums/posts/${posts[id]._id}><div><h2>${posts[id].title} by <a href=/profileVisit/${posts[id].username}>${posts[id].username}</a></h2><p class="body">${posts[id].body}</p></div></a>`);
     }
     //Forum Post Form Submit Action
     forumPostForm.submit(async function (event) {
@@ -58,7 +58,7 @@
 
         //Appends All Posts Into postList Div
                 for(id in posts){
-                    $("#postList").append(`<a href=/forums/posts/${posts[id]._id}><div><h2>${posts[id].title} by <a href=/profile/${posts[id].username}>${posts[id].username}</a></h2><p class="body">${posts[id].body}</p></div></a>`);
+                    $("#postList").append(`<a href=/forums/posts/${posts[id]._id}><div><h2>${posts[id].title} by <a href=/profileVisit/${posts[id].username}>${posts[id].username}</a></h2><p class="body">${posts[id].body}</p></div></a>`);
                 }
             }
             else{
