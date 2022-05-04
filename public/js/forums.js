@@ -26,7 +26,7 @@
 
     //Appends All Posts Into postList Div
     for(id in posts){
-        $("#postList").append(`<div><h2>${posts[id].title} by <a href=/profile/${posts[id].username}>${posts[id].username}</a></h2><p>${posts[id].body}</p></div>`);
+        $("#postList").append(`<div><h2>${posts[id].title} by <a href=/profileVisit/${posts[id].username}>${posts[id].username}</a></h2><p>${posts[id].body}</p></div>`);
     }
     //Forum Post Form Submit Action
     forumPostForm.submit(async function (event) {
@@ -49,7 +49,7 @@
                 data: data
             });
             if(status.postInserted){
-                $("#postList").append(`<div><h2>${data.postTitle} by <a href=/profile/${data.postUser}>${data.postUser}</a></h2><p>${data.postBody}</p></div>`);
+                $("#postList").append(`<div><h2>${data.postTitle} by <a href=/profileVisit/${data.postUser}>${data.postUser}</a></h2><p>${data.postBody}</p></div>`);
             }
             else{
                 forumError.text('Could not upload new forum post!');

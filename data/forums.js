@@ -124,8 +124,11 @@ let exportedMethods = {
     if(user === null){
         throw 'No user exists with the supplied username!';
     }
-    postIDs = user.posts;
-    posts = [];
+    let postIDs = []
+    if(user.posts){
+        postIDs = user.posts;
+    }
+    let posts = [];
     for(postID of postIDs){
         post = await this.get(postID);
         posts.push(post);
