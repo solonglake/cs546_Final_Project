@@ -15,8 +15,7 @@ router.get('/getAllGames', async (req, res) => {
     try {
         let allGames = await gamesData.getAllGames();
         res.json(allGames)
-    } catch (e) {
-        console.log(e);   
+    } catch (e) { 
         res.sendStatus(500);
     }
 });

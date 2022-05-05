@@ -1,4 +1,5 @@
 const express = require('express');
+const { user } = require('../.git/secret');
 const router = express.Router();
 const data = require('../data');
 const forumsData = data.forums;
@@ -55,6 +56,7 @@ router.post('/newPost', async (req, res) => {
         let postTitle = req.body.postTitle;
         let postBody = req.body.postBody;
         let username = req.session.user.username;
+        
         let status;
         if(postTitle.trim().length == 0) status = {postInserted: false};
         if(postBody.trim().length == 0) status = {postInserted: false};
