@@ -3,7 +3,6 @@ const {ObjectId} = require('mongodb');
 const users = mongoCollections.users;
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
-const secret = require('../.git/secret');
 
 let exportedMethods = {
     async createUser(username, password, email){
@@ -69,14 +68,14 @@ let exportedMethods = {
         let transport = nodemailer.createTransport({
             service: "Yahoo",
             auth: {
-              user: secret.user,
-              pass: secret.pass,
+              user: process.env.NODE_MAILER_USER,
+              pass: process.env.NODE_MAILER_PASS,
             },
         });
 
         // send email
         let info = await transport.sendMail({
-            from: secret.user,
+            from: process.env.NODE_MAILER_USER,
             to: email,
             subject: 'Please confirm your account',
             html: 
@@ -95,7 +94,9 @@ let exportedMethods = {
             password: hashedPassword,
             email: email,
             token, token,
-            status: 'pending'
+            status: 'pending',
+            runs: [],
+            posts: []
         };
         const insertInfo = await usersCollection.insertOne(newUser);
         if(insertInfo.insertedCount === 0){
@@ -103,7 +104,18 @@ let exportedMethods = {
         }
         return {userInserted: true};
     },
+    async getUsername(id){
+        if (!id) throw 'ID must be supplied!';
+        if (typeof id !== 'string') throw 'ID must be a string';
+        id = id.trim();
+        if (id.length == 0) throw 'ID must be a nonempty string';
+        if (!ObjectId.isValid(id)) throw 'invalid object ID';
 
+        const userCollection = await users();
+        const user = await userCollection.findOne({ _id: ObjectId(id) });
+        if (user === null) throw 'No User exists with this ID';
+        return user.username;
+    },
     async checkUser(username, password){
         // input format checking
         if(!username){
@@ -331,7 +343,7 @@ let exportedMethods = {
         }
         username = username.toLowerCase();
 
-        // get profilePic of user with supplied username
+        // get Posts of user with supplied username
         const usersCollection = await users();
         const user = await usersCollection.findOne({username: username});
         if(user === null){
@@ -360,7 +372,7 @@ let exportedMethods = {
         }
         username = username.toLowerCase();
 
-        // get profilePic of user with supplied username
+        // get Runs of user with supplied username
         const usersCollection = await users();
         const user = await usersCollection.findOne({username: username});
         if(user === null){
