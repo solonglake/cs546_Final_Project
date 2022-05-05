@@ -57,7 +57,6 @@
         // gameNameInput validation
         let validName = true;
         data.gameNameInput = data.gameNameInput.trim();
-        data.gameNameInput = data.gameNameInput.toLowerCase();
         if(data.gameNameInput.length === 0){
             validName = false;
         }

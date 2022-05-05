@@ -80,7 +80,6 @@ router.post('/', async (req, res) => {
             res.status(400).render('partials/signup', { title: 'Sign Up', error: 'Username must only use alphanumeric characters!' });
             return;
         }
-        username = username.toLowerCase();
         if(typeof(password) != 'string'){
             res.status(400).render('partials/signup', { title: 'Sign Up', error: 'Password must be a string!' });
             return;
@@ -136,7 +135,7 @@ router.post('/', async (req, res) => {
                 res.status(500).json({ error: 'Internal Server Error' });
             }
         } catch (e) {
-            res.status(400).render('partials/signup', { title: 'Sign Up', error: 'Could not send email to that address!' });
+            res.status(400).render('partials/signup', { title: 'Sign Up', error: e });
         }       
     } catch (e) {
         res.sendStatus(500).json({ error: 'Internal Server Error' });

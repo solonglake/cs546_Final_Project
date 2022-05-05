@@ -41,7 +41,6 @@ let exportedMethods = {
         if(username.match(/^[0-9A-Za-z]+$/) === null){
             throw 'Username must only use alphanumeric characters!';
         }
-        username = username.toLowerCase();
 
         let res = videoLink.match(/^(?:https?:\/\/)?(?:m\.|www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/);
         if(res === null){
@@ -168,7 +167,6 @@ let exportedMethods = {
        if(username.match(/^[0-9A-Za-z]+$/) === null){
            throw 'Username must only use alphanumeric characters!';
        }
-       username = username.toLowerCase();
    
        //Query For User 
        const usersCollection = await users();

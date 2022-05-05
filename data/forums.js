@@ -33,7 +33,6 @@ let exportedMethods = {
     if(username.match(/^[0-9A-Za-z]+$/) === null){
         throw 'Username must only use alphanumeric characters!';
     }
-    username = username.toLowerCase();
      //Query User Document 
     const usersCollection = await users();
     const user = await usersCollection.findOne({username: username});
@@ -93,7 +92,6 @@ let exportedMethods = {
    if(username.match(/^[0-9A-Za-z]+$/) === null){
        throw 'Username must only use alphanumeric characters!';
    }
-   username = username.toLowerCase();
     //Query Post and User Document 
    const usersCollection = await users();
    const user = await usersCollection.findOne({username: username});
@@ -187,7 +185,6 @@ async checkId(id){
     if(username.match(/^[0-9A-Za-z]+$/) === null){
         throw 'Username must only use alphanumeric characters!';
     }
-    username = username.toLowerCase();
 
     //Query For User 
     const usersCollection = await users();
