@@ -2,18 +2,43 @@ const express = require('express');
 const router = express.Router();
 const data = require('../data');
 const forumsData = data.forums;
-
+const usersData = data.users;
 router.get('/', async (req, res) => {
     try {
-        res.render('partials/forums', { title: 'Forums',js: 'forums.js'});
+        if(req.session.user) {
+            res.render('partials/forums', { title: 'Forums',js: 'forums.js',username: req.session.user.username});
+        } else {
+            res.render('partials/forums', { title: 'Forums',js: 'forums.js'});
+        }
     } catch (e) {
+        res.sendStatus(500);
+    }
+});
+
+router.get('/posts/:id', async (req, res) => {
+    try {
+        req.params.id = await forumsData.checkId(req.params.id);
+        const post = await forumsData.get(req.params.id);
+        post.comments = await forumsData.formatComments(req.params.id);
+        let userId = await forumsData.checkId(post.userId.toString());
+        let postUser = await usersData.getUsername(userId);
+        let hasComments = true;
+        if(post.comments.length == 0){
+            hasComments = false;
+        }
+        if(req.session.user) {
+            res.render('partials/post', { title: 'Forums',js: 'post.js',username: req.session.user.username, post: post, postUser: postUser, comments: post.comments, hasComments: hasComments});
+        } else {
+            res.render('partials/post', { title: 'Forums',js: 'post.js', post: post, postUser: postUser, comments: post.comments, hasComments: hasComments});
+        }
+    } catch (e) {
+        console.log(e);
         res.sendStatus(500);
     }
 });
 
 router.get('/posts', async (req, res) => {
     try {
-
         try{
             posts = await forumsData.getAll();    
             } catch(e){
@@ -30,20 +55,40 @@ router.post('/newPost', async (req, res) => {
         let postTitle = req.body.postTitle;
         let postBody = req.body.postBody;
         let username = req.session.user.username;
+        
         let status;
         if(postTitle.trim().length == 0) status = {postInserted: false};
         if(postBody.trim().length == 0) status = {postInserted: false};
-        console.log("Checkmark 1");
         try{
         status = await forumsData.createPost(postTitle, postBody,username);    
         } catch(e){
-            console.log(e);
+            res.sendStatus(500);
         }
-        console.log("Checkmark 2");
         res.json(status);
     } catch (e) {     
         res.sendStatus(500);
     }
 });
 
+router.post('/newComment', async (req, res) => {
+    try {
+        let postId = req.body.postId;
+        let commentBody = req.body.commentBody;
+        let commentUser = req.body.commentUser;
+        let status;
+        if(postId.trim().length == 0) status = {commentInserted: false};
+        if(commentBody.trim().length == 0) status = {commentInserted: false};
+        if(commentUser.trim().length == 0) status = {commentInserted: false};
+        try{
+        status = await forumsData.createComment(postId, commentBody,commentUser);    
+        } catch(e){
+            console.log(e);
+            res.sendStatus(500);
+        }
+        res.json(status);
+    } catch (e) {   
+        console.log(e);  
+        res.sendStatus(500);
+    }
+});
 module.exports = router;

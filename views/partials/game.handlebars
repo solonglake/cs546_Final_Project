@@ -1,0 +1,29 @@
+<article>
+    <h1>{{name}}</h1>
+    <p class="error" id="runsError" hidden></p>
+    <div id="runsList">
+        Runs
+    </div>
+    
+    <div>
+        Make a new Run
+        <p id="unverified-runPost">
+            You Must Be Logged In To Make A Run Post.
+        </p>
+        <form id="verified-runPost" action="/game/newRun" method="POST">
+        <label for="runTime">Enter Time in format 00.00.000</label> <br>
+        <input type="text" name="runTime" id="runTime" /> <br>
+        <label for="runTag">Enter type of run</label> <br>
+        <input type="text" name="runTag" id="runTag" autocomplete ="off" ><br>
+        <label for="runBody">Enter description of run</label> </br>
+        <input type="text" name="runBody" id="runBody" autocomplete ="off"> <br>
+        <label for="runVideo">Enter video link</label> <br>
+        <input type="text" name="runVideo" id="runVideo" autocomplete ="off"><br>
+        <input type="text" id="runUser" name="runUser" value="{{username}}" hidden>
+        <button type="submit">Submit</button>
+    </form>
+    </div>
+    <form action='/' method='GET'>
+        <button type='submit'>Home</button>
+    </form>
+</article>

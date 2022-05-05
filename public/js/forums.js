@@ -4,10 +4,9 @@
     let unverified = $('#unverified-forumPost');
     let forumPostForm = $('#verified-forumPost');
     let forumError = $('#forumError');
-    let postList = $('#postList');
     let postTitle = $('#postTitle');
     let postBody = $('#postBody');
-
+    let postUser = $('#postUser');
     //Determines if form can be shown based on the users authentification
     let status = await $.ajax({
         url: '/authenticated',
@@ -18,7 +17,7 @@
     } else {
         forumPostForm.hide();
     }
-
+    console.log(postUser.val());
     //Pulls All Posts In The Database
     let posts = await $.ajax({
         url: '/forums/posts',
@@ -27,18 +26,16 @@
 
     //Appends All Posts Into postList Div
     for(id in posts){
-        $("#postList").append(`<div><h2>${posts[id].title} by <a href=/profile/${posts[id].username}>${posts[id].username}</a></h2><p>${posts[id].body}</p></div>`);
+        $("#postList").append(`<a href=/forums/posts/${posts[id]._id}><div><h2>${posts[id].title} by <a href=/profileVisit/${posts[id].username}>${posts[id].username}</a></h2><p class="body">${posts[id].body}</p></div></a>`);
     }
     //Forum Post Form Submit Action
     forumPostForm.submit(async function (event) {
         event.preventDefault();
         let data = { 
             postTitle: postTitle.val(),
-            postBody: postBody.val()
+            postBody: postBody.val(),
+            postUser: postUser.val()
         };
-
-        console.log(data.postBody);
-        console.log(data.postTitle);
         // FormPost validation
         if(!data.postTitle){
             alert("ERROR: Please provide a title to your forum post.");
@@ -52,7 +49,17 @@
                 data: data
             });
             if(status.postInserted){
-                $("#postList").append(`<div><h2>${posts[id].title} by <a href=/profile/${posts[id].username}>${posts[id].username}</a></h2><p>${posts[id].body}</p></div>`);
+                $("#postList").empty();
+        //Pulls All Posts In The Database
+                let posts = await $.ajax({
+                    url: '/forums/posts',
+                    type: 'Get'
+                });
+
+        //Appends All Posts Into postList Div
+                for(id in posts){
+                    $("#postList").append(`<a href=/forums/posts/${posts[id]._id}><div><h2>${posts[id].title} by <a href=/profileVisit/${posts[id].username}>${posts[id].username}</a></h2><p class="body">${posts[id].body}</p></div></a>`);
+                }
             }
             else{
                 forumError.text('Could not upload new forum post!');
