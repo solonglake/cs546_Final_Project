@@ -84,16 +84,6 @@ router.get('/bio', async (req, res) => {
     }
 });
 
-router.get('/posts', async (req, res) => {
-    try {
-        let username = req.session.user.username;
-        let posts = await usersData.getPosts(username);  
-        res.json(posts);
-    } catch (e) {
-        res.sendStatus(500);
-    }
-});
-
 router.get('/runs', async (req, res) => {
     try {
         let username = req.session.user.username;

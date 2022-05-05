@@ -80,6 +80,7 @@
             } else {
                 gamesError.text('Could not add game with supplied link and name!');
                 gamesError.show();
+                addGamePic.show();
             }
         } else if(!validPic){
             gamesError.text('Supplied link is not valid!');

@@ -41,7 +41,7 @@ let exportedMethods = {
         throw 'User with supplied username does not exist!';
     }
      //Create Post Object
-    post = {
+    let post = {
         userId: user._id.toString(),
         title: title,
         body: body,
@@ -62,14 +62,76 @@ let exportedMethods = {
     } else {
         posts = [postId];
     }
-    
+
     usersCollection.updateOne(
         { username: username }, 
         { '$set': {posts: posts} }
     );
 
-    return {postInserted: true};
+    return {postInserted: true, postId: postId};
  },
+ async createComment(id, body, username){
+    //Input Validation
+   id = await this.checkId(id);
+   if(!body) throw 'Body must be supplied!';
+   if(!username) throw 'Username must be supplied!';
+
+   if(typeof(body) != 'string') throw 'Body must be a string!';
+   if(typeof(username) != 'string') throw 'Username must be a string!';
+
+   body = body.trim();
+   username = username.trim();
+   if(body.length == 0){
+       throw 'Body must be nonempty!';
+   }
+   if(username.length < 4){
+       throw 'Username must atleast 4 characters long!';
+   }
+   if(username.indexOf(' ') != -1){
+       throw 'Username cannot contain spaces!';
+   }
+   if(username.match(/^[0-9A-Za-z]+$/) === null){
+       throw 'Username must only use alphanumeric characters!';
+   }
+   username = username.toLowerCase();
+    //Query Post and User Document 
+   const usersCollection = await users();
+   const user = await usersCollection.findOne({username: username});
+   if(user === null){
+       throw 'User with supplied username does not exist!';
+   }
+   const post = await this.get(id);
+    //Create Comment Object
+   date = new Date();
+   let comment = {
+       _id: ObjectId().toString(),
+       userId: user._id.toString(),
+       date: date,
+       content: body
+   };
+
+   
+    //Insert Comment Into Forums Database
+    const forumsCollection = await forums();
+    post.comments.push(comment);
+    forumsCollection.updateOne(
+       { _id: ObjectId(post._id) }, 
+       { '$set': {comments: post.comments} }
+   );
+   let comments = await this.formatComments(post._id);
+   return {commentInserted: true, comments: comments};
+},
+
+async formatComments(id){
+    id = await this.checkId(id);
+    let post = await this.get(id);
+    let comments = post.comments;
+    for(comment of comments){
+        comment.username = await usersData.getUsername(comment.userId);
+        comment.date = comment.date.toDateString();
+    }
+    return comments;
+},
  async getAll(){
      //Make Database Query For All Posts
     const forumsCollection = await forums();
@@ -97,7 +159,16 @@ let exportedMethods = {
     post._id = post._id.toString();
     return post;
  },
-
+async checkId(id){
+    if(!id) throw 'Post ID  must be supplied!';
+    if(typeof(id) != 'string') throw 'Post ID  must be a string!';   
+    id = id.trim();
+    if(id.length == 0){
+        throw 'Post ID  must be nonempty!';
+    }
+    if(!ObjectId.isValid(id)) throw "Post ID must be a valid ObjectID!"
+    return id;
+},
  async getAllUser(username){
      //Input Validation
     if(!username){
@@ -124,8 +195,11 @@ let exportedMethods = {
     if(user === null){
         throw 'No user exists with the supplied username!';
     }
-    postIDs = user.posts;
-    posts = [];
+    let postIDs = []
+    if(user.posts){
+        postIDs = user.posts;
+    }
+    let posts = [];
     for(postID of postIDs){
         post = await this.get(postID);
         posts.push(post);

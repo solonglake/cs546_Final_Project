@@ -1,0 +1,47 @@
+<article>
+    <h1>Forums</h1>
+    <p class="error" id="postError" hidden></p>
+    <div>
+        <h2>{{post.title}} by <a href="/profile/{{postUser}}">{{postUser}}</a></h2>
+        <p>{{post.body}}</p>  
+        <div>
+            <h3>Comments</h3> 
+            <div id="commentList">
+                {{#if hasComments}}
+                {{#each comments}}
+                <div>
+                    <p class="commentBody">{{content}} </p>
+                    <h4 class="commentTitle">
+                        {{username}} <br>
+                        {{date}}
+                    </h4>                
+                </div>
+                {{/each}}
+                {{else}}
+                <p id="noComments">No comments have been made yet.</p>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <h3>Add A Comment</h3>
+        <p id="unverified-commentForm">
+            You must be logged in to make a comment.
+        </p>
+
+        <form id="verified-commentForm" action="/newComment" method="POST">
+            <label for="commentBody">Description</label> <br>
+            <input type="text" id="commentBody" name="commentBody"> <br>
+            <input type="text" id="commentUser" name="commentUser" value="{{username}}" hidden>
+            <input type="text" id="postId" name="postId" value="{{post._id}}" hidden>
+            <button type="submit" class="btn">Comment</button>
+        </form>
+    </div>
+    <form action='/forums' method='GET'>
+        <button type='submit'>Back to Posts Page</button>
+    </form>
+    <form action='/' method='GET'>
+        <button type='submit'>Home</button>
+    </form>
+</article>
