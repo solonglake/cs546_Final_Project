@@ -46,12 +46,17 @@ router.post('/', async (req, res) => {
         let email = req.body.email;
         let username = req.body.username;
         let password = req.body.password;
+        let passwordConfirm = req.body.passwordConfirm;
         if(!username){
             res.status(400).render('partials/signup', { title: 'Sign Up', error: 'Username not supplied!' });
             return;
         }
         if(!password){
             res.status(400).render('partials/signup', { title: 'Sign Up', error: 'Password not supplied!' });
+            return;
+        }
+        if(!passwordConfirm){
+            res.status(400).render('partials/signup', { title: 'Sign Up', error: 'Confirmation password not supplied!' });
             return;
         }
         if(!email){
@@ -89,6 +94,23 @@ router.post('/', async (req, res) => {
             res.status(400).render('partials/signup', { title: 'Sign Up', error: 'Password cannot contain spaces!' });
             return;
         }
+        if(typeof(passwordConfirm) != 'string'){
+            res.status(400).render('partials/signup', { title: 'Sign Up', error: 'Confirmation password must be a string!' });
+            return;
+        }
+        passwordConfirm = passwordConfirm.trim();
+        if(passwordConfirm.length < 6){
+            res.status(400).render('partials/signup', { title: 'Sign Up', error: 'Confirmation password must atleast 6 characters long!' });
+            return;
+        }
+        if(passwordConfirm.indexOf(' ') != -1){
+            res.status(400).render('partials/signup', { title: 'Sign Up', error: 'Confirmation password cannot contain spaces!' });
+            return;
+        }
+        if(passwordConfirm != password){
+            res.status(400).render('partials/signup', { title: 'Sign Up', error: 'Passwords do not match!' });
+            return;
+        }
         let invalidEmail = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
         email = email.trim();
         email = email.toLowerCase();
@@ -107,7 +129,7 @@ router.post('/', async (req, res) => {
 
         // database call and rendering
         try {
-            const result = await usersData.createUser(username, password, email);
+            const result = await usersData.createUser(username, password, passwordConfirm, email);
             if(result.userInserted){
                 res.render('partials/unverified', { title: 'Verify Your Account', username: username});
             } else {
