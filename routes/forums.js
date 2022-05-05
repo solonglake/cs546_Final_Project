@@ -1,5 +1,4 @@
 const express = require('express');
-const { user } = require('../.git/secret');
 const router = express.Router();
 const data = require('../data');
 const forumsData = data.forums;

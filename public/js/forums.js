@@ -17,7 +17,6 @@
     } else {
         forumPostForm.hide();
     }
-    console.log(postUser.val());
     //Pulls All Posts In The Database
     let posts = await $.ajax({
         url: '/forums/posts',

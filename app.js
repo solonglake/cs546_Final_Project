@@ -8,7 +8,7 @@ const exphbs = require('express-handlebars');
 
 app.use(session({
   name: 'AuthCookie',
-  secret: 'some secret string!',
+  secret: 'If you see this, you can have Issac rework your wardrobe',
   resave: false,
   saveUninitialized: true
 }));
