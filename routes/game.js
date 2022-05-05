@@ -22,14 +22,12 @@ router.post('/getRuns', async (req, res) => {
                 res.json(allRuns);
                 return;
             }catch(e){
-                console.log('here?');
                 status = {success: false};
             }
         }
         
         res.json(status);
     } catch (e) {
-        console.log('here');
         res.sendStatus(500);
     }
 });
@@ -38,7 +36,9 @@ router.post('/getRuns', async (req, res) => {
 
 router.post('/newRun', async (req, res) => {
     try{
-        let runTime = req.body.runTime;
+        let runHour = req.body.runHour;
+        let runMin = req.body.runMin;
+        let runSec = req.body.runSec;
         let runVideo = req.body.runVideo;
         let runBody = req.body.runBody;
         let runTag = req.body.runTag;
@@ -46,7 +46,10 @@ router.post('/newRun', async (req, res) => {
         let username = req.session.user.username;
 
         let status = {success: true};
-        if(runTime.trim().length == 0) status = {success: false};
+        if(runHour<=0 && runMin<=0 && runSec<=0) status = {success: false};
+        if(runHour<0) status = {success: false};
+        if(runMin<0 || runMin>=60) status = {success: false};
+        if(runSec<0 || runSec>=60) status = {success: false};
         if(runVideo.trim().length == 0) status = {success: false};
         if(runBody.trim().length == 0) status = {success: false};
         if(runTag.trim().length == 0) status = {success: false};
@@ -56,19 +59,17 @@ router.post('/newRun', async (req, res) => {
         if(dummy === null){
             status = {success: false};
         }
-        console.log(status);
+
         if(status.success){
-            try{
+            let runTime = runHour*3600 + runMin*60 + runSec;
+            try{   
                 status = await runsData.createRun(username, gameName, runBody, runTime, runVideo, runTag);    
                 } catch(e){
-                    console.log(e);
                     status = {success: false};
                 }
         } 
             res.json(status);
         } catch (e) {
-            console.log(req.body);
-            console.log(e);
             res.sendStatus(500);
         }
 
@@ -93,7 +94,6 @@ router.get('/:id', async (req, res) => {
             res.render('partials/game', {title:gamename, name:gamename,js: 'game.js'});
         }
     }catch (e) {
-        console.log(res.session);
         res.sendStatus(500);
     }
 });

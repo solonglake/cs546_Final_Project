@@ -4,7 +4,9 @@
     let unverified = $('#unverified-runPost');
     let runPostForm = $('#verified-runPost');
     let runError = $('#runsError');
-    let runTime = $('#runTime');
+    let runHour = $('#runHour');
+    let runMin = $('#runMin');
+    let runSec = $('#runSec');
     let runVideo = $('#runVideo');
     let runBody = $('#runBody');
     let runGame = $("h1").context.title;
@@ -28,37 +30,42 @@
             type: 'Post',
             data: {name: runGame}
         });
+        
         //Appends All runs Into runs Div
         for(id in runs){
-            $("#runsList").append(`<div><h2><a href =/runs/${runs[id]._id}>${runs[id].time}</a> by <a href=/profileVisit/${runs[id].runUser }>${runs[id].runUser}</a></h2></div>`);
+            let h = Math.floor(runs[id].time/3600)/10;
+            let m = Math.floor((runs[id].time%3600)/60)/10;
+            let s = runs[id].time%3600%60;
+            let t = h+"h "+m+"m "+s+"s";
+            $("#runsList").append(`<div><h2><a href =/runs/${runs[id]._id}>${t}</a> by <a href=/profileVisit/${runs[id].runUser }>${runs[id].runUser}</a> on ${runs[id].date}</h2></div>`);
         }
     } catch(e){
-        console.log(e);
         console.log('empty');
     }
     //Run Post Form Submit Action
     runPostForm.submit(async function (event) {
         event.preventDefault();
         let data = { 
-            runTime: runTime.val(),
+            runHour: runHour.val(),
+            runMin: runMin.val(),
+            runSec: runSec.val(),
             runVideo: runVideo.val(),
             runBody: runBody.val(),
             runTag: runTag.val(),
             runGame: runGame,
             runUser: runUser.val()
         };
-        console.log(data.runGame);
         // RunPost validation
         if(!data.runTag){
             alert("ERROR: Please provide a Tag to your run post.");
         } 
-        if(!data.runBody){
+        else if(!data.runBody){
             alert("ERROR: Please provide a Body to your run post.");
         }  
-        if (!data.runTime){
+        else if (!data.runSec || !data.runMin || !data.runHour){
             alert("ERROR: Please provide a Time to your run post.");
         } 
-        if (!data.runVideo){
+        else if (!data.runVideo){
             alert("ERROR: Please provide a video link to your run post.");
         }
         let validVid = true;
@@ -66,17 +73,14 @@
         if(res===null)
             validVid = false;
         let validTime = true;
-        data.runTime = data.runTime.trim();
-        if(data.runTime.length === 0)
+        if(data.runHour <= 0 && data.runMin<=0 && data.runSec<=0)
             validTime = false;
-        if(data.runTime.length != 9){
+        if(data.runHour < 0)
             validTime = false;
-        }
-        if(isNaN(data.runTime.substring(0,2)) || isNaN(data.runTime.substring(3,5) || isNaN(data.runTime.substring(6,8)))){
+        if(data.runMin < 0 || data.runMin >=60){
             validTime = false;
         }
-
-        if(data.runTime.charAt(2)!='.' || data.runTime.charAt(5)!='.'){
+        if(data.runSec < 0 || data.runSec >= 60){
             validTime = false;
         }
         
@@ -97,23 +101,24 @@
                 data: data
             });
             if(status.success){
-                $("#runsList").append(`<div><h2><a href=/runs/${status.id}>${data.runTime}</a> by <a href=/profileVisit/${data.runUser}>${data.runUser}</a></h2></div>`);
+                let t = data.runHour+"h "+data.runMin+"m "+data.runSec+"s";
+                $("#runsList").append(`<div><h2><a href=/runs/${status.id}>${t}</a> by <a href=/profileVisit/${data.runUser}>${data.runUser}</a> on ${status.date}</h2></div>`);
             }
             else{
                 runError.text('Could not upload new run!');
                 runError.show();
             }
-        } else if(!validTime){
-            runError.text('Need valid input for time!');
-            runError.show();
-        } else if(!validVid){
-            runError.text('Need valid input for video link!');
-            runError.show();
         } else if(!validTag){
             runError.text('Need valid input for tag!');
             runError.show();
-        } else {
+        } else if(!validBody){
             runError.text('Need valid input for body!');
+            runError.show();
+        } else if(!validTime){
+            runError.text('Need valid input for time!');
+            runError.show();
+        } else {
+            runError.text('Need valid input for video link!');
             runError.show();
         }
 
