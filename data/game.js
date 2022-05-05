@@ -6,26 +6,43 @@ const games = mongoCollections.games;
 const gamesData = require('./games');
 
 let exportedMethods = {
-    async createRun(username, gameName, time,videoLink, tag){
+    async createRun(username, gameName, body, time,videoLink, tag){
         // input format checking
+        console.log('running create run');
         if(!username) throw 'Username must be supplied!';
         if(!gameName) throw 'Game name must be supplied!';
         if(!time) throw 'Time must be supplied!';
         if(!videoLink) throw 'videoLink must be supplied!';
         if(!tag) throw 'tag must be supplied!';
+        if(!body) throw 'body must be supplied!';
 
         if(typeof(username) != 'string') throw 'Username must be a string!';
         if(typeof(gameName) != 'string') throw 'gameName must be a string!';
         if(typeof(time) != 'string') throw 'Time must be a string!';
         if(typeof(tag) != 'string') throw 'Tag must be a string!';
+        if(typeof(body) != 'string') throw 'Body must be a string!';
         username = username.trim();
         time = time.trim();
         tag = tag.trim();
-        if(time.length == 0){
-            throw 'Time must be nonempty!';
+        body = body.trim();
+        console.log('time');
+        if(time.length != 9){
+            throw 'Time must be in input 00.00.000!';
         }
+        console.log('length issue good');
+        if(isNaN(time.substring(0,2)) || isNaN(time.substring(3,5) || isNaN(time.substring(6,8)))){
+            throw 'Time has to contain integers';
+        }
+        console.log('sub issue good');
+        if(time.charAt(2)!='.' || time.charAt(5)!='.'){
+            throw 'Time has to have . at third, sixth, and seventh characters';
+        }
+        console.log('. issue good');
         if(tag.length == 0){
             throw 'Tag must be nonempty!';
+        }
+        if(body.length == 0){
+            throw 'Body must be nonempty!';
         }
         if(username.length < 4){
             throw 'Username must atleast 4 characters long!';
@@ -59,9 +76,18 @@ let exportedMethods = {
         
         let RunId = new ObjectId();
         // actually add the run
+        let likes = 0;
+        let dislikes = 0;
+        let today = new Date();
+        let date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
         let newRun = {
             _id: RunId,
             userId: user._id.toString(),
+            runUser: username,
+            date: date,
+            body: body,
+            likes: likes,
+            dislikes: dislikes,
             time: time,
             tag: tag,
             video: videoLink
@@ -91,7 +117,7 @@ let exportedMethods = {
             { name: gameName }, 
             { '$set': {runs: gameRun} }
         );
-        return {runInserted: true};
+        return {success: true, id: RunId};
     },
 
     async getAllRunsGame(gameName) {
