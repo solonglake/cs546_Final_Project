@@ -6,13 +6,16 @@ const nodemailer = require('nodemailer');
 const secret = require('../.git/secret');
 
 let exportedMethods = {
-    async createUser(username, password, email){
+    async createUser(username, password, passwordConfirm, email){
         // input format checking
         if(!username){
             throw 'Username must be supplied!';
         }
         if(!password){
             throw 'Password must be supplied!';
+        }
+        if(!passwordConfirm){
+            throw 'Confirmation password must be supplied!';
         }
         if(typeof(username) != 'string'){
             throw 'Username must be a string!';
@@ -37,6 +40,19 @@ let exportedMethods = {
         }
         if(password.indexOf(' ') != -1){
             throw 'Password cannot contain spaces!';
+        }
+        if(typeof(passwordConfirm) != 'string'){
+            throw 'Confirmation password must be a string!';
+        }
+        passwordConfirm = passwordConfirm.trim();
+        if(passwordConfirm.length < 6){
+            throw 'Confirmation password must atleast 6 characters long!';
+        }
+        if(passwordConfirm.indexOf(' ') != -1){
+            throw 'Confirmation password cannot contain spaces!';
+        }
+        if(passwordConfirm != password){
+            throw 'Passwords do not match!';
         }
         let invalidEmail = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
         email = email.trim();
@@ -75,7 +91,7 @@ let exportedMethods = {
         });
 
         // send email
-        let info = await transport.sendMail({
+        await transport.sendMail({
             from: secret.user,
             to: email,
             subject: 'Please confirm your account',
