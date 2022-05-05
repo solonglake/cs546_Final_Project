@@ -41,7 +41,6 @@ router.post('/', async (req, res) => {
             res.status(400).render('partials/login', { title: 'Login', error: 'Username must only use alphanumeric characters!' });
             return;
         }
-        username = username.toLowerCase();
         if(typeof(password) != 'string'){
             res.status(400).render('partials/login', { title: 'Login', error: 'Password must be a string!' });
             return;

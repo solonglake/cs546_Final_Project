@@ -29,7 +29,6 @@ router.get('/:id', async (req, res) => {
             res.status(400);
             return;
         }
-        username = username.toLowerCase();
 
         //check if user with username exists
         try{
@@ -74,7 +73,6 @@ router.post('/profilePic', async (req, res) => {
             res.status(404);
             return;
         }
-        username = username.toLowerCase();
 
         let link = await usersData.getProfilePic(username);    
         res.json(link);
@@ -107,7 +105,6 @@ router.post('/bio', async (req, res) => {
             res.status(404);
             return;
         }
-        username = username.toLowerCase();
 
         let bio = await usersData.getBio(username);    
         res.json(bio);
@@ -140,7 +137,6 @@ router.post('/posts', async (req, res) => {
             res.status(404);
             return;
         }
-        username = username.toLowerCase();
 
         let posts = await forumsData.getAllUser(username);  
         res.json(posts);
@@ -173,7 +169,6 @@ router.post('/runs', async (req, res) => {
             res.status(404);
             return;
         }
-        username = username.toLowerCase();
         
         let runs = await usersData.getRuns(username);    
         res.json(runs);

@@ -18,12 +18,14 @@
     }
 
     // load users profile picture
-    const link = await $.ajax({
-        url: '/profile/profilePic',
-        type: 'Get'
-    });
-    if(link.link){
-        profileForm.attr("src", link.link);
+    if(status.authenticated){
+        const link = await $.ajax({
+            url: '/profile/profilePic',
+            type: 'Get'
+        });
+        if(link.link){
+            profileForm.attr("src", link.link);
+        }
     }
 
     let totalUsers = await $.ajax({

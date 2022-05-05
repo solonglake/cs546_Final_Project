@@ -92,7 +92,7 @@ let exportedMethods = {
         });
 
         // send email
-        let info = await transport.sendMail({
+        await transport.sendMail({
             from: process.env.NODE_MAILER_USER,
             to: email,
             subject: 'Please confirm your account',
@@ -175,8 +175,7 @@ let exportedMethods = {
 
         // check if username and password combination are in the database
         const usersCollection = await users();
-        let userNameCase = new RegExp(["^", username, "$"].join(""), "i");
-        const user = await usersCollection.findOne({username: userNameCase});
+        const user = await usersCollection.findOne({username: username});
         if(user === null){
             throw 'Either the username or password is invalid';
         }
@@ -205,10 +204,9 @@ let exportedMethods = {
         
         // get user and change status
         const usersCollection = await users();
-        let userNameCase = new RegExp(["^", username, "$"].join(""), "i");
-        const user = await usersCollection.findOne({username: userNameCase});
+        const user = await usersCollection.findOne({token: token});
         if(user === null){
-            throw 'User with supplied username does not exist!';
+            throw 'User with supplied token does not exist!';
         }
         usersCollection.updateOne(
             { token: token }, 

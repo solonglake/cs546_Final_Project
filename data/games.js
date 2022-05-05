@@ -21,7 +21,6 @@ let exportedMethods = {
         if(gameName.match(/^[\w\-\s]+$/) === null){
             throw 'gameName must only use alphanumeric characters or spaces!';
         }
-        gameName = gameName.toLowerCase();
         
         let res = gameImage.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
         if(res === null){
@@ -30,7 +29,8 @@ let exportedMethods = {
 
         // check if game already exists in the database
         const gamesCollection = await games();
-        const game = await gamesCollection.findOne({name: gameName});
+        let gameNameCase = new RegExp(["^", gameName, "$"].join(""), "i");
+        const game = await gamesCollection.findOne({name: gameNameCase});
         if(game != null){
             throw 'This game already exists';
         }
