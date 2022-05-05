@@ -115,10 +115,10 @@
         bioForm[0].reset()
         bioForm.hide(); 
 
-        // profilePicInput validation
+        // bioInput validation
         let validInput = true;
         data.bioInput = data.bioInput.trim();
-        if(data.bioInput.length === 0){
+        if(data.bioInput.length === 0 || data.bioInput.length > 1000){
             validInput = false;
         }
 

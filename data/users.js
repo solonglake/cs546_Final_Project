@@ -233,6 +233,9 @@ let exportedMethods = {
         if(bio.length === 0){
             throw 'Bio must not be empty!';
         }
+        if(bio.length > 1000){
+            throw 'Bio is too long!';
+        }
 
         // update user with new bio
         const usersCollection = await users();

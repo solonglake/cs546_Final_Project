@@ -67,8 +67,19 @@ router.post('/bio', async (req, res) => {
     try {
         let bioInput = req.body.bioInput;
         let username = req.session.user.username;
-        let status = await usersData.changeBio(username, bioInput);    
-        res.json(status);
+
+        // bioInput validation
+        let validInput = true;
+        bioInput = bioInput.trim();
+        if(bioInput.length === 0 || bioInput.length > 1000){
+            validInput = false;
+        }
+        if(validInput){
+            let status = await usersData.changeBio(username, bioInput);    
+            res.json(status);
+        } else {
+            res.json({success: false});
+        }
     } catch (e) {     
         res.sendStatus(500);
     }
