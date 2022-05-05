@@ -27,7 +27,6 @@ let exportedMethods = {
         if(username.match(/^[0-9A-Za-z]+$/) === null){
             throw 'Username must only use alphanumeric characters!';
         }
-        username = username.toLowerCase();
         if(typeof(password) != 'string'){
             throw 'Password must be a string!';
         }
@@ -53,7 +52,8 @@ let exportedMethods = {
 
         // check if username already exists in the database
         const usersCollection = await users();
-        const user = await usersCollection.findOne({username: username});
+        let userNameCase = new RegExp(["^", username, "$"].join(""), "i");
+        const user = await usersCollection.findOne({username: userNameCase});
         if(user != null){
             throw 'Already user with the supplied username!';
         }
@@ -66,6 +66,7 @@ let exportedMethods = {
         }
 
         // create transport for node mailer
+
         let transport = nodemailer.createTransport({
             service: "Yahoo",
             auth: {
@@ -145,7 +146,6 @@ let exportedMethods = {
         if(username.match(/^[0-9A-Za-z]+$/) === null){
             throw 'Username must only use alphanumeric characters!';
         }
-        username = username.toLowerCase();
         if(typeof(password) != 'string'){
             throw 'Password must be a string!';
         }
@@ -159,7 +159,8 @@ let exportedMethods = {
 
         // check if username and password combination are in the database
         const usersCollection = await users();
-        const user = await usersCollection.findOne({username: username});
+        let userNameCase = new RegExp(["^", username, "$"].join(""), "i");
+        const user = await usersCollection.findOne({username: userNameCase});
         if(user === null){
             throw 'Either the username or password is invalid';
         }
@@ -188,7 +189,8 @@ let exportedMethods = {
         
         // get user and change status
         const usersCollection = await users();
-        const user = await usersCollection.findOne({token: token});
+        let userNameCase = new RegExp(["^", username, "$"].join(""), "i");
+        const user = await usersCollection.findOne({username: userNameCase});
         if(user === null){
             throw 'User with supplied username does not exist!';
         }
@@ -217,7 +219,6 @@ let exportedMethods = {
         if(username.match(/^[0-9A-Za-z]+$/) === null){
             throw 'Username must only use alphanumeric characters!';
         }
-        username = username.toLowerCase();
         bio = bio.trim();
         if(bio.length === 0){
             throw 'Bio must not be empty!';
@@ -225,7 +226,8 @@ let exportedMethods = {
 
         // update user with new bio
         const usersCollection = await users();
-        const user = await usersCollection.findOne({username: username});
+        let userNameCase = new RegExp(["^", username, "$"].join(""), "i");
+        const user = await usersCollection.findOne({username: userNameCase});
         if(user === null){
             throw 'User with supplied username does not exist!';
         }
@@ -254,11 +256,11 @@ let exportedMethods = {
         if(username.match(/^[0-9A-Za-z]+$/) === null){
             throw 'Username must only use alphanumeric characters!';
         }
-        username = username.toLowerCase();
 
         // get profilePic of user with supplied username
         const usersCollection = await users();
-        const user = await usersCollection.findOne({username: username});
+        let userNameCase = new RegExp(["^", username, "$"].join(""), "i");
+        const user = await usersCollection.findOne({username: userNameCase});
         if(user === null){
             throw 'User with supplied username does not exist!';
         }
@@ -283,7 +285,6 @@ let exportedMethods = {
         if(username.match(/^[0-9A-Za-z]+$/) === null){
             throw 'Username must only use alphanumeric characters!';
         }
-        username = username.toLowerCase();
         let res = link.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
         if(res === null){
             throw 'Supplied link is not valid!';
@@ -291,7 +292,8 @@ let exportedMethods = {
 
         // update user with new link
         const usersCollection = await users();
-        const user = await usersCollection.findOne({username: username});
+        let userNameCase = new RegExp(["^", username, "$"].join(""), "i");
+        const user = await usersCollection.findOne({username: userNameCase});
         if(user === null){
             throw 'User with supplied username does not exist!';
         }
@@ -320,11 +322,11 @@ let exportedMethods = {
         if(username.match(/^[0-9A-Za-z]+$/) === null){
             throw 'Username must only use alphanumeric characters!';
         }
-        username = username.toLowerCase();
 
         // get profilePic of user with supplied username
         const usersCollection = await users();
-        const user = await usersCollection.findOne({username: username});
+        let userNameCase = new RegExp(["^", username, "$"].join(""), "i");
+        const user = await usersCollection.findOne({username: userNameCase});
         if(user === null){
             throw 'User with supplied username does not exist!';
         }
@@ -349,11 +351,11 @@ let exportedMethods = {
         if(username.match(/^[0-9A-Za-z]+$/) === null){
             throw 'Username must only use alphanumeric characters!';
         }
-        username = username.toLowerCase();
 
         // get Posts of user with supplied username
         const usersCollection = await users();
-        const user = await usersCollection.findOne({username: username});
+        let userNameCase = new RegExp(["^", username, "$"].join(""), "i");
+        const user = await usersCollection.findOne({username: userNameCase});
         if(user === null){
             throw 'User with supplied username does not exist!';
         }
@@ -378,11 +380,11 @@ let exportedMethods = {
         if(username.match(/^[0-9A-Za-z]+$/) === null){
             throw 'Username must only use alphanumeric characters!';
         }
-        username = username.toLowerCase();
 
         // get Runs of user with supplied username
         const usersCollection = await users();
-        const user = await usersCollection.findOne({username: username});
+        let userNameCase = new RegExp(["^", username, "$"].join(""), "i");
+        const user = await usersCollection.findOne({username: userNameCase});
         if(user === null){
             throw 'User with supplied username does not exist!';
         }
@@ -407,11 +409,12 @@ let exportedMethods = {
         if(username.match(/^[0-9A-Za-z]+$/) === null){
             throw 'Username must only use alphanumeric characters!';
         }
-        username = username.toLowerCase();
+
 
         // check if user exists
         const usersCollection = await users();
-        const user = await usersCollection.findOne({username: username});
+        let userNameCase = new RegExp(["^", username, "$"].join(""), "i");
+        const user = await usersCollection.findOne({username: userNameCase});
         if(user === null){
             throw 'User with supplied username does not exist!';
         }

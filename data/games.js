@@ -18,8 +18,8 @@ let exportedMethods = {
         if(gameName.length < 1){
             throw 'gameName must atleast 1 characters long!';
         }
-        if(gameName.match(/^[0-9A-Za-z]+$/) === null){
-            throw 'gameName must only use alphanumeric characters!';
+        if(gameName.match(/^[\w\-\s]+$/) === null){
+            throw 'gameName must only use alphanumeric characters or spaces!';
         }
         gameName = gameName.toLowerCase();
         
@@ -66,7 +66,7 @@ let exportedMethods = {
         if(name.length == 0){
             throw 'Game Name  must be nonempty!';
         }
-        if(name.match(/^[0-9A-Za-z]+$/) === null){
+        if(name.match(/^[\w\-\s]+$/) === null){
             throw 'Game name must only use alphanumeric characters!';
         }
         //Make Database Query For Matching PostID
