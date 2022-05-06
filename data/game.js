@@ -76,7 +76,6 @@ let exportedMethods = {
             video: videoLink,
             comments:[]
         };
-        
         //Insert runId Into User Database
         //Check if user has runs property, if not make it
         let userRun = user.runs;
@@ -103,7 +102,6 @@ let exportedMethods = {
         
         return {success: true, id: RunId, time: t, date: newRun.date};
     },
-
     async getAllRunsGame(gameName) {
         if (arguments.length != 1) {
             throw "Need a gameId";
@@ -132,8 +130,10 @@ let exportedMethods = {
         }
         if(!ObjectId.isValid(id)) throw "Run ID must be a valid ObjectID!"
         //Make Database Query For Matching RunID
-        const gamesCollection = await game();
+        const gamesCollection = await games();
+        
         const game = await gamesCollection.findOne({'runs._id':ObjectId(id)});
+        
         let ret;
         if (game === null) throw 'No run with that id';
         for(let i = 0; i<game.runs.length; i++){
@@ -143,6 +143,105 @@ let exportedMethods = {
             }
         }
     return ret;
+    },
+
+    async incrementLike(id,username){
+        //Input Validation
+        if(!id) throw 'Run ID  must be supplied!';
+        if(typeof(id) != 'string') throw 'Run ID  must be a string!';   
+        id = id.trim();
+        if(id.length == 0){
+        throw 'Run ID  must be nonempty!';
+        }
+        if(!ObjectId.isValid(id)) throw "Run ID must be a valid ObjectID!"
+        //Make Database Query For Matching RunID
+        const gamesCollection = await games();
+        const game = await gamesCollection.findOne({'runs._id':ObjectId(id)});
+        let ret;
+        let l;
+        if (game === null) throw 'No run with that id';
+        for(let i = 0; i<game.runs.length; i++){
+            if(game.runs[i]._id.toString()==ObjectId(id)){
+                curr = game.runs[i].likes;
+                ret = game.runs[i];
+            }
+        }
+        //check if already liked/disliked
+        let userArray = ret.users;
+        let temp = userArray;
+        if(userArray){
+            for(let i =0; i<ret.users.length; i++){
+                if(ret.users[i]==username){
+                    return {success:false};
+                }
+            }
+            userArray.push(username);            
+        }
+        else{
+            userArray = [username];
+        }
+        let arr = await gamesCollection.updateOne(
+            { name: game.name, "runs._id": ObjectId(id) },
+            { "$set": {"runs.$.users": userArray} }
+        );
+        //increment like in collection
+        let check = await gamesCollection.updateOne(
+            { name: game.name, "runs._id": ObjectId(id) },
+            { '$set': {"runs.$.likes": curr+1} }
+        );
+    return {success:true,runLike: curr};
+    },
+
+    async incrementDislike(id, username){
+        //Input Validation
+        if(!id) throw 'Run ID  must be supplied!';
+        if(typeof(id) != 'string') throw 'Run ID  must be a string!';   
+        id = id.trim();
+        if(id.length == 0){
+            throw 'Run ID  must be nonempty!';
+        }
+        if(!ObjectId.isValid(id)) throw "Run ID must be a valid ObjectID!"
+
+        //Make Database Query For Matching RunID
+        const gamesCollection = await games();
+        const game = await gamesCollection.findOne({'runs._id': ObjectId(id)});
+        let ret;
+        let curr;
+        if (game === null) throw 'No run with that id';
+        for(let i = 0; i<game.runs.length; i++){
+            if(game.runs[i]._id.toString() == ObjectId(id)){
+                curr = game.runs[i].dislikes;
+                ret = game.runs[i];
+            }
+        }
+
+        //check if already liked/disliked       
+        let userArray = ret.users;
+        if(userArray){
+            for(let i =0; i<ret.users.length; i++){
+                if(ret.users[i]==username){
+                    return {success:false};
+                }
+            }
+            userArray.push(username);         
+        }
+        else{
+            userArray = [username];
+        }
+
+        //Needs to be fixed
+        let arr = await gamesCollection.updateOne(
+            { name: game.name, "runs._id": ObjectId(id) },
+            { "$set": {"runs.$.users": userArray} }
+        );
+
+        //increment like in collection
+        let check = await gamesCollection.updateOne(
+            { name: game.name, "runs._id": ObjectId(id) }, 
+            { '$set': {"runs.$.dislikes": curr+1} }
+        );
+
+        return {success: true, runDislike: curr};
     },
     
     async getAllUser(username){
