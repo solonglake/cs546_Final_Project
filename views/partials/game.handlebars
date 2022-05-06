@@ -9,6 +9,7 @@
         <p id="unverified-runPost">
             You Must Be Logged In To Make A Run Post.
         </p>
+        <input type="text" id="runUser" name="runUser" value="{{username}}" hidden>
         <form id="verified-runPost" action="/game/newRun" method="POST">
         <div class="timeVal">
             <input type="number" value="0" name="runHour" id="runHour" />
@@ -24,7 +25,7 @@
         <input type="text" name="runBody" id="runBody" autocomplete ="off"> <br>
         <label for="runVideo">Enter video link</label> <br>
         <input type="text" name="runVideo" id="runVideo" autocomplete ="off"><br>
-        <input type="text" id="runUser" name="runUser" value="{{username}}" hidden>
+        
         <button type="submit">Submit</button>
     </form>
     </div>

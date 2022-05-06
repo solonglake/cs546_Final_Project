@@ -14,7 +14,7 @@ const constructorMethod = (app) => {
     app.use('/signup', signupRoutes);
     app.use('/games', gamesRoutes);
     app.use('/game', gameRoutes);
-    app.use('./runs', runRoutes);
+    app.use('/runs', runRoutes);
     app.use('/forums', forumsRoutes);
     app.use('/profile', profileRoutes);
     app.use('/profileVisit', profileVisitRoutes);

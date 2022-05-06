@@ -22,7 +22,6 @@
     } else {
         runPostForm.hide();
     }
-
     //Pulls All Runs from game
     try{
         let runs = await $.ajax({
@@ -33,11 +32,24 @@
         
         //Appends All runs Into runs Div
         for(id in runs){
-            let h = Math.floor(runs[id].time/3600)/10;
-            let m = Math.floor((runs[id].time%3600)/60)/10;
-            let s = runs[id].time%3600%60;
+            let totalTime = runs[id].time;
+            
+            let h = Math.floor(totalTime/3600)/10;
+            let m = Math.floor((totalTime%3600)/60)/10;
+            let s = totalTime%3600%60;
+            if(h<1){
+                h = 0;
+                m = Math.floor(totalTime/60)/10;
+                s = totalTime%60;
+            }
+            else if(m<1&&h<1){
+                h =0;
+                m = 0;
+                s = totalTime;
+            }
+            
             let t = h+"h "+m+"m "+s+"s";
-            $("#runsList").append(`<div><h2><a href =/runs/${runs[id]._id}>${t}</a> by <a href=/profileVisit/${runs[id].runUser }>${runs[id].runUser}</a> on ${runs[id].date}</h2></div>`);
+            $("#runsList").append(`<div><h2><a href =/runs/${runs[id]._id.toString()}>${t}</a> by <a href=/profileVisit/${runs[id].runUser }>${runs[id].runUser}</a> on ${runs[id].date}</h2></div>`);
         }
     } catch(e){
         console.log('empty');
@@ -102,7 +114,7 @@
             });
             if(status.success){
                 let t = data.runHour+"h "+data.runMin+"m "+data.runSec+"s";
-                $("#runsList").append(`<div><h2><a href=/runs/${status.id}>${t}</a> by <a href=/profileVisit/${data.runUser}>${data.runUser}</a> on ${status.date}</h2></div>`);
+                $("#runsList").append(`<div><h2><a href=/runs/${status.id.toString()}>${t}</a> by <a href=/profileVisit/${data.runUser}>${data.runUser}</a> on ${status.date}</h2></div>`);
             }
             else{
                 runError.text('Could not upload new run!');
