@@ -108,6 +108,13 @@ let exportedMethods = {
         return {success: true, id: RunId, time: t, date: newRun.date};
     },
 
+    async getGameByRunId (runId) {
+        const gamesCollection = await games();
+        let holder = await gamesCollection.findOne({ runs: {$exists:  {_id: runId} }} );
+        holder = holder.name;
+        return holder;
+    },
+
     async getAllRunsGame(gameName) {
         if (arguments.length != 1) {
             throw "Need a gameId";

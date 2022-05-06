@@ -74,6 +74,15 @@ router.post('/newRun', async (req, res) => {
         }
 
 });
+router.post('/gameName', async (req, res) => {
+    let holder = Object.keys(req.body);
+    let gameName = await runsData.getGameByRunId(holder[0]);
+    if (!gameName) {
+        res.status(400).json({ error: 'ID is missing' });
+        return;
+    }
+    res.json(gameName);
+})
 router.get('/:id', async (req, res) => {
         let gamename = req.params.id;
     if (!gamename) {

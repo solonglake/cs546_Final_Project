@@ -46,6 +46,17 @@ router.get('/posts', async (req, res) => {
     }
 });
 
+router.get('/runs', async (req, res) => {
+    try {
+        let username = req.session.user.username;
+        let runs = await usersData.getRuns(username);
+        res.json(runs);
+    }
+    catch (e) {
+        res.sendStatus(500);
+    }
+});
+
 router.post('/profilePic', async (req, res) => {
     try {
         let profilePicInput = req.body.profilePicInput;

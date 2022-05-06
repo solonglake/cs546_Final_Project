@@ -20,6 +20,7 @@ router.get('/getAllGames', async (req, res) => {
     }
 });
 
+
 router.post('/addGame', async (req, res) => {
     try {
         let gamePicInput = req.body.gamePicInput;

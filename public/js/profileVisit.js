@@ -5,6 +5,7 @@
     let postsDiv = $('#postsDiv');
     let runsDiv = $('#runsDiv');
     let usernameH1 = $('#usernameH1');
+    let runsList = $('#runsList');
     let username = usernameH1.text();
 
     // load users profile picture
@@ -47,8 +48,27 @@
         type: 'Post',
         data: {username: username}
     });
-    if(runs.run && runs.runs.length > 0){
-        console.log('work in progress');
+    if(runs.runs && runs.runs.length > 0){
+        for(let num = 0; num < runs.runs.length; num++){
+            let holder = 'gameName/';
+
+            let runByGame = await $.ajax ({
+                url: holder,
+                type: 'Post',
+                data: runs.runs[num]._id
+        });
+        let time = runs.runs[num].time.toString()[0]
+        time += runs.runs[num].time.toString()[1]
+        time += 'h'
+        time += runs.runs[num].time.toString()[2]
+        time += runs.runs[num].time.toString()[3]
+        time += 'm'
+        time += runs.runs[num].time.toString()[4]
+        time += runs.runs[num].time.toString()[5]
+        time += 's'
+        //${runs.runs[num].time}${runByGame}${runs.runs[num].date}
+            runsList.append(`<li><a href ="/runs/${runs.runs[num]._id}">${time}</a>  <a href="/game/${runByGame}">${runByGame}</a>   ${runs.runs[num].date}</li>`);
+        }
     } else {
         runsDiv.text('No runs yet');
     }
