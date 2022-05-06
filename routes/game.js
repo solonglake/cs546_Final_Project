@@ -3,6 +3,7 @@ const router = express.Router();
 const data = require('../data');
 const gamesData = data.games;
 const runsData = data.game;
+const xss = require('xss');
 
 router.post('/getRuns', async (req, res) => {
     try {
@@ -59,7 +60,7 @@ router.post('/newRun', async (req, res) => {
         if(status.success){
             let runTime = runHour*3600 + runMin*60 + runSec;
             try{   
-                status = await runsData.createRun(username, gameName, runBody, runTime, runVideo, tags);    
+                status = await runsData.createRun(xss(username), xss(gameName), xss(runBody), xss(runTime), xss(runVideo), tags);    
             } catch (e) {
                 status = {success: false};
             }

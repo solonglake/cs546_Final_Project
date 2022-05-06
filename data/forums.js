@@ -3,6 +3,8 @@ const { ObjectId } = require('mongodb');
 const forums = mongoCollections.forums;
 const users = mongoCollections.users;
 const usersData = require('./users');
+const MarkdownIt = require('markdown-it/lib');
+const md = new MarkdownIt();
 
 let exportedMethods = {
  async createPost(title, body, username){
@@ -121,12 +123,14 @@ let exportedMethods = {
 },
 
 async formatComments(id){
+    //Formats Comments to Be Displayed Properly On Website
     id = await this.checkId(id);
     let post = await this.get(id);
     let comments = post.comments;
     for(comment of comments){
         comment.username = await usersData.getUsername(comment.userId);
         comment.date = comment.date.toDateString();
+        comment.content = md.render(comment.content);
     }
     return comments;
 },
@@ -138,6 +142,8 @@ async formatComments(id){
     for(let post of postList){
         post._id = post._id.toString();
         post.username = await usersData.getUsername(post.userId.toString());
+        //post.title = md.render(post.title);
+        //post.body = md.render(post.body);
     }
     return postList;
  },
