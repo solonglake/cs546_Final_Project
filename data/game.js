@@ -6,27 +6,25 @@ const games = mongoCollections.games;
 const gamesData = require('./games');
 
 let exportedMethods = {
-    async createRun(username, gameName, body, time,videoLink, tag){
+    async createRun(username, gameName, body, time,videoLink, tags){
         // input format checking
         if(!username) throw 'Username must be supplied!';
         if(!gameName) throw 'Game name must be supplied!';
         if(!time) throw 'Time must be supplied!';
         if(!videoLink) throw 'videoLink must be supplied!';
-        if(!tag) throw 'tag must be supplied!';
+        if(!tags) throw 'tags must be supplied!';
         if(!body) throw 'body must be supplied!';
         let t = Number(time);
         if(typeof(username) != 'string') throw 'Username must be a string!';
         if(typeof(gameName) != 'string') throw 'gameName must be a string!';
         if(typeof(t) != 'number') throw 'Time must be an integer!';
-        if(typeof(tag) != 'string') throw 'Tag must be a string!';
         if(typeof(body) != 'string') throw 'Body must be a string!';
         username = username.trim();
-        tag = tag.trim();
         body = body.trim();
         if(t<=0){
             throw 'Time has to be at least 1 second';
         }
-        if(tag.length == 0){
+        if(tags.length === 0){
             throw 'Tag must be nonempty!';
         }
         if(body.length == 0){
@@ -47,21 +45,19 @@ let exportedMethods = {
             throw 'Supplied link is not valid!';
         }
 
-        // check if user already exists in the database
-        
+        // get user and game
         const usersCollection = await users();
         const user = await usersCollection.findOne({username: username});
         if(user === null){
             throw 'User with supplied username does not exist!';
         }
-
         const gamesCollection = await games();
         const game = await gamesCollection.findOne({name: gameName});
         if(game === null){
             throw 'Game with supplied gameName does not exist!';
         }
-        
         let RunId = new ObjectId();
+
         // actually add the run
         let likes = 0;
         let dislikes = 0;
@@ -76,7 +72,7 @@ let exportedMethods = {
             likes: likes,
             dislikes: dislikes,
             time: t,
-            tag: tag,
+            tags: tags,
             video: videoLink,
             comments:[]
         };
@@ -89,22 +85,22 @@ let exportedMethods = {
         } else {
             userRun = [newRun];
         }
-    
         usersCollection.updateOne(
             { username: username }, 
             { '$set': {runs: userRun} }
         );
+
         let gameRun = game.runs;
         if(gameRun){
             gameRun.push(newRun);
         } else {
             gameRun = [newRun];
         }
-    
         gamesCollection.updateOne(
             { name: gameName }, 
             { '$set': {runs: gameRun} }
         );
+        
         return {success: true, id: RunId, time: t, date: newRun.date};
     },
 
