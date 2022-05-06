@@ -3,6 +3,7 @@ const router = express.Router();
 const data = require('../data');
 const gamesData = data.games;
 const gameData = data.game;
+
 router.get('/:id', async (req, res) => {
     let runId = req.params.id;
     
@@ -18,22 +19,20 @@ router.get('/:id', async (req, res) => {
     try {
         let run = await gameData.getRun(runId);
         let user = req.session.user;
-        console.log(runId);
         if(user)
-            res.render('partials/runs', { title: 'Runs', user: user.username, name: run.runUser, Tag: run.tag, video:run.video, body: run.body, likes: run.likes, dislikes: run.dislikes, time: run.time, runId: runId, js: 'runs.js' });
+            res.render('partials/runs', { title: 'Runs', user: user.username, name: run.runUser, Tags: run.tags, video:run.video, body: run.body, likes: run.likes, dislikes: run.dislikes, time: run.time, runId: runId, js: 'runs.js' });
         else{
-            res.render('partials/runs', { title: 'Runs', name: run.runUser, Tag: run.tag, video:run.video, body: run.body, likes: run.likes, dislikes: run.dislikes, time: run.time, runId: runId, js: 'runs.js' });
+            res.render('partials/runs', { title: 'Runs', name: run.runUser, Tags: run.tags, video:run.video, body: run.body, likes: run.likes, dislikes: run.dislikes, time: run.time, runId: runId, js: 'runs.js' });
         } 
             
     } catch (e) {
-        console.log(e);
         res.sendStatus(500);
     }
 });
+
 router.post('/like', async (req, res) => {
     let runId = req.body.runId;
     let username = req.session.user.username;
-    console.log(username);
     if(!runId){
         res.status(400).json({error:'ID is missing'});
         return;
@@ -54,10 +53,10 @@ router.post('/like', async (req, res) => {
         let run = await gameData.incrementLike(runId,username);
         res.json(run);
     } catch(e){
-        console.log(e);
         res.sendStatus(500);
     }
 });
+
 router.post('/dislike', async (req, res) => {
     let runId = req.body.runId;
     let username = req.session.user.username;
@@ -81,7 +80,6 @@ router.post('/dislike', async (req, res) => {
         let run = await gameData.incrementDislike(runId,username);
         res.json(run);
     } catch(e){
-        console.log(e);
         res.sendStatus(500);
     }
 });
