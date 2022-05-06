@@ -1,6 +1,5 @@
 // this function runs whenever the forum handlebars file is loaded
 (async function ($) {
-
     let unverified = $('#unverified-runPost');
     let runPostForm = $('#verified-runPost');
     let runError = $('#runsError');
@@ -11,7 +10,19 @@
     let runBody = $('#runBody');
     let runGame = $("h1").context.title;
     let runUser = $('#runUser');
-    let runTag = $('#runTag');
+    let tag1 = $('#tag1');
+    let tag2 = $('#tag2');
+    let tag3 = $('#tag3');
+    let tag4 = $('#tag4');
+    let runsList = $('#runsList');
+    let tagSearchForm = $('#tagSearchForm');
+    let tag1Search = $('#tag1Search');
+    let tag2Search = $('#tag2Search');
+    let tag3Search = $('#tag3Search');
+    let tag4Search = $('#tag4Search');
+
+
+
     //Determines if form can be shown based on the users authentification
     let status = await $.ajax({
         url: '/authenticated',
@@ -23,8 +34,34 @@
         runPostForm.hide();
     }
     //Pulls All Runs from game
-    try{
-        let runs = await $.ajax({
+    let runs = await $.ajax({
+        url: '/game/getRuns',
+        type: 'Post',
+        data: {name: runGame}
+    });
+
+    //Appends All runs Into runs Div
+    for(id in runs){
+        let h = Math.floor(runs[id].time/3600)/10;
+        let m = Math.floor((runs[id].time%3600)/60)/10;
+        let s = runs[id].time%3600%60;
+        let t = h+"h "+m+"m "+s+"s";
+        runsList.append(`<div><h2><a href =/runs/${runs[id]._id}>${t}</a> by <a href=/profileVisit/${runs[id].runUser }>${runs[id].runUser}</a> on ${runs[id].date} [${runs[id].tags}]</h2></div>`);
+    }
+    if(runs.length === 0){
+        runsList.append('<p>There are currently no runs</p>');
+    }
+
+    //Tag Search Form Submit Action
+    tagSearchForm.submit(async function (event) {
+        event.preventDefault();
+        let tags = [];
+        if(tag1Search.is(":checked")) tags.push(tag1Search.val());
+        if(tag2Search.is(":checked")) tags.push(tag2Search.val());
+        if(tag3Search.is(":checked")) tags.push(tag3Search.val());
+        if(tag4Search.is(":checked")) tags.push(tag4Search.val());
+        
+        let allRuns = await $.ajax({
             url: '/game/getRuns',
             type: 'Post',
             data: {name: runGame}
@@ -51,25 +88,63 @@
             let t = h+"h "+m+"m "+s+"s";
             $("#runsList").append(`<div><h2><a href =/runs/${runs[id]._id.toString()}>${t}</a> by <a href=/profileVisit/${runs[id].runUser }>${runs[id].runUser}</a> on ${runs[id].date}</h2></div>`);
         }
-    } catch(e){
-        console.log('empty');
-    }
+
+        let validRuns = [];
+        if(tags.length > 0){
+            for(let i=0; i<allRuns.length; i++){
+                let valid = true;
+                for(let j=0; j<tags.length; j++){
+                    if(!allRuns[i].tags.includes(tags[j])){
+                        valid = false;
+                    }
+                }
+                if(valid){
+                    validRuns.push(allRuns[i]);
+                }
+            }
+        } else {
+            validRuns = allRuns;
+        }      
+
+        runsList.empty();
+        for(id in validRuns){
+            let h = Math.floor(validRuns[id].time/3600)/10;
+            let m = Math.floor((validRuns[id].time%3600)/60)/10;
+            let s = validRuns[id].time%3600%60;
+            let t = h+"h "+m+"m "+s+"s";
+            runsList.append(`<div><h2><a href =/runs/${validRuns[id]._id}>${t}</a> by <a href=/profileVisit/${validRuns[id].runUser }>${validRuns[id].runUser}</a> on ${validRuns[id].date} [${validRuns[id].tags}]</h2></div>`);
+        }
+        if(validRuns.length === 0){
+            let message = 'No Runs with Supplied Tags';
+            if(allRuns.length === 0){
+                message = 'There are currently no runs';
+            }
+            runsList.append(`<p>${message}</p>`);
+        }
+    });
+
     //Run Post Form Submit Action
     runPostForm.submit(async function (event) {
         event.preventDefault();
+        let tags = [];
+        if(tag1.is(":checked")) tags.push(tag1.val());
+        if(tag2.is(":checked")) tags.push(tag2.val());
+        if(tag3.is(":checked")) tags.push(tag3.val());
+        if(tag4.is(":checked")) tags.push(tag4.val());
         let data = { 
             runHour: runHour.val(),
             runMin: runMin.val(),
             runSec: runSec.val(),
             runVideo: runVideo.val(),
             runBody: runBody.val(),
-            runTag: runTag.val(),
             runGame: runGame,
-            runUser: runUser.val()
+            runUser: runUser.val(),
+            tags: tags
         };
+
         // RunPost validation
-        if(!data.runTag){
-            alert("ERROR: Please provide a Tag to your run post.");
+        if(tags.length === 0){
+            alert("ERROR: Please select a tag!");
         } 
         else if(!data.runBody){
             alert("ERROR: Please provide a Body to your run post.");
@@ -95,17 +170,12 @@
         if(data.runSec < 0 || data.runSec >= 60){
             validTime = false;
         }
-        
-        let validTag = true;
-        data.runTag = data.runTag.trim();
-        if(data.runTag.length === 0)
-            validTag = false;
         let validBody = true;
         data.runBody = data.runBody.trim();
-        if(data.runBody.length === 0)
+        if(data.runBody.length === 0 || data.runBody.length > 1000)
             validBody = false;
         
-        if(validTag && validVid && validTime && validBody) {
+        if(validVid && validTime && validBody) {
             runError.hide();
             const status = await $.ajax({
                 url: '/game/newRun',
@@ -117,12 +187,11 @@
                 $("#runsList").append(`<div><h2><a href=/runs/${status.id.toString()}>${t}</a> by <a href=/profileVisit/${data.runUser}>${data.runUser}</a> on ${status.date}</h2></div>`);
             }
             else{
+                runsList.append(`<div><h2><a href=/runs/${status.id}>${t}</a> by <a href=/profileVisit/${data.runUser}>${data.runUser}</a> on ${status.date} [${data.tags}]</h2></div>`);
+            } else {
                 runError.text('Could not upload new run!');
                 runError.show();
             }
-        } else if(!validTag){
-            runError.text('Need valid input for tag!');
-            runError.show();
         } else if(!validBody){
             runError.text('Need valid input for body!');
             runError.show();
@@ -133,7 +202,5 @@
             runError.text('Need valid input for video link!');
             runError.show();
         }
-
     });
-
 })(window.jQuery);

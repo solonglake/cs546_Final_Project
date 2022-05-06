@@ -1,8 +1,21 @@
 <article>
     <h1>{{name}}</h1>
     <p class="error" id="runsError" hidden></p>
-    <div id="runsList">
-    </div>
+
+    <form id="tagSearchForm">
+        <p>Select which tags you want to search for</p>
+        <input type="checkbox" id="tag1Search" name="tag1Search" value="Any%">
+        <label for="tag1Search"> Any%</label><br>
+        <input type="checkbox" id="tag2Search" name="tag2Search" value="100%">
+        <label for="tag2Search"> 100%</label><br>
+        <input type="checkbox" id="tag3Search" name="tag3Search" value="Glitchless">
+        <label for="tag3Search"> Glitchless</label><br>
+        <input type="checkbox" id="tag4Search" name="tag4Search" value="Blindfolded">
+        <label for="tag4Search"> Blindfolded</label><br>
+        <button type="submit">Submit</button>
+    </form>
+
+    <div id="runsList"></div>
     
     <div>
         Make a new Run
@@ -28,7 +41,35 @@
         
         <button type="submit">Submit</button>
     </form>
+            <div class="timeVal">
+                <input type="number" value="0" name="runHour" id="runHour" />
+                <label for="runHour">h</label>
+                <input type="number" value="0" name="runMin" id="runMin" />
+                <label for="runMin">m</label>
+                <input type="number" value="0" name="runSec" id="runSec" />
+                <label for="runSec">s</label>
+            </div>
+
+            <div class="tags">
+                <input type="checkbox" id="tag1" name="tag1" value="Any%">
+                <label for="tag1"> Any%</label><br>
+                <input type="checkbox" id="tag2" name="tag2" value="100%">
+                <label for="tag2"> 100%</label><br>
+                <input type="checkbox" id="tag3" name="tag3" value="Glitchless">
+                <label for="tag3"> Glitchless</label><br>
+                <input type="checkbox" id="tag4" name="tag4" value="Blindfolded">
+                <label for="tag4"> Blindfolded</label>
+            </div>
+
+            <label for="runBody">Enter description of run</label> </br>
+            <input type="text" name="runBody" id="runBody" autocomplete ="off"> <br>
+            <label for="runVideo">Enter video link</label> <br>
+            <input type="text" name="runVideo" id="runVideo" autocomplete ="off"><br>
+            <input type="text" id="runUser" name="runUser" value="{{username}}" hidden>
+            <button type="submit">Submit</button>
+        </form>
     </div>
+
     <form action='/' method='GET'>
         <button type='submit'>Home</button>
     </form>
