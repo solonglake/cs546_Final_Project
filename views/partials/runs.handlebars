@@ -5,10 +5,10 @@
     <input type="number" id="likeVal" name="likeVal" value="{{likes}}" hidden>
     <input type="number" id="dislikeVal" name="dislikeVal" value="{{dislikes}}" hidden>
     <div>
-        <h2>{{Tag}}</h2> <br>
+        <h2>{{Tags}}</h2>
         <input type="number" id="time" name="time" value="{{time}}" hidden>
         <p id="displayTime"></p>
-        <p>{{body}}</p> <br>
+        <p>{{body}}</p>
         <form id="likes" action="/like" method="POST">
             <input type="image" id="likesCt" src="../../public/imgs/like.png" alt="Submit">
             
@@ -23,14 +23,17 @@
             
         </iframe>
     </div>
+    <ul id="commentsList">
+
+    </ul>
     <div>
         <p id="unverified-commentPost">
             You Must Be Logged In To Make A Comment.
         </p>
     <form id ="verified-commentPost" action="/newComment" method="POST">
-        <label for="comment">Title</label> <br>
-        <input type="text" id="comment" name="comment"> <br>
-        <input type="text" id="commentUser" name="commentUser" value="{{user}}" hidden>
+        <label for="commDesc">Enter comment below</label> <br>
+        <input type="text" id="commDesc" name="commDesc"> <br>
+        <input type="text" id="commUser" name="commUser" value="{{user}}" hidden>
         <button type="submit" class="btn">Comment</button>
     </form>
     </div>

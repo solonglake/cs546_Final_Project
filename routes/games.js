@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const data = require('../data');
 const gamesData = data.games;
+const xss = require('xss');
 
 router.get('/', async (req, res) => {
     try {
@@ -41,7 +42,7 @@ router.post('/addGame', async (req, res) => {
 
         if(status.success){
             try{
-                status = await gamesData.createGame(gamePicInput, gameNameInput);    
+                status = await gamesData.createGame(xss(gamePicInput), xss(gameNameInput));    
             } catch (e) {
                 status = {success: false};
             }        

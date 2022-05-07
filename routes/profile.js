@@ -3,6 +3,7 @@ const router = express.Router();
 const data = require('../data');
 const usersData = data.users;
 const forumsData = data.forums;
+const xss = require('xss');
 
 router.get('/logout', async (req, res) => {
     try {
@@ -18,7 +19,7 @@ router.get('/', async (req, res) => {
         let username = req.session.user.username;
         res.render('partials/profile', {
             title: 'Profile', 
-            username: username,
+            username: xss(username),
             js: 'profile.js'
         });
     } catch (e) {
@@ -66,7 +67,7 @@ router.post('/profilePic', async (req, res) => {
         if(result === null){
             status = {success: false};
         } else {
-            status = await usersData.changeProfilePic(username, profilePicInput);    
+            status = await usersData.changeProfilePic(username, xss(profilePicInput));    
         }
         res.json(status);
     } catch (e) {     
@@ -86,7 +87,7 @@ router.post('/bio', async (req, res) => {
             validInput = false;
         }
         if(validInput){
-            let status = await usersData.changeBio(username, bioInput);    
+            let status = await usersData.changeBio(username, xss(bioInput));    
             res.json(status);
         } else {
             res.json({success: false});
