@@ -1,6 +1,6 @@
 <article>
     <h1>{{name}}'s Run</h1>
-    <p class="error" id="commError" hidden></p>
+    <p class="error" id="error" hidden></p>
     <input type="text" id="runId" name="runId" value="{{runId}}" hidden>
     <input type="number" id="likeVal" name="likeVal" value="{{likes}}" hidden>
     <input type="number" id="dislikeVal" name="dislikeVal" value="{{dislikes}}" hidden>
@@ -23,9 +23,7 @@
             
         </iframe>
     </div>
-    <ul id="commentsList">
-
-    </ul>
+    <ul id="commentsList"></ul>
     <div>
         <p id="unverified-commentPost">
             You Must Be Logged In To Make A Comment.

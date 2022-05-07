@@ -3,8 +3,6 @@ const {ObjectId} = require('mongodb');
 const users = mongoCollections.users;
 const usersData = require('./users');
 const games = mongoCollections.games;
-const gamesData = require('./games');
-const { game } = require('.');
 
 let exportedMethods = {
     async createRun(username, gameName, body, time,videoLink, tags){
@@ -125,9 +123,7 @@ let exportedMethods = {
         const game = await gamesCollection.findOne({ name: gameName });
         if (game === null) throw 'no game with that id';
         return game.runs;
-    },
-
-    
+    }, 
 
     async getRun(id){
         //Input Validation
@@ -288,7 +284,7 @@ let exportedMethods = {
     },
 
     async newComment(runId, username, comment) {
-        //id Validation
+        // id Validation
         if(!runId) throw 'Run ID  must be supplied!';
         if(typeof(runId) != 'string') throw 'Run ID  must be a string!';   
         runId = runId.trim();
@@ -296,7 +292,8 @@ let exportedMethods = {
             throw 'Run ID  must be nonempty!';
         }
         if(!ObjectId.isValid(runId)) throw "Run ID must be a valid ObjectID!"
-        //username validation
+
+        // username and comment validation
         if(!username) throw 'username must be supplied!';
         if(typeof(username) != 'string') throw 'username  must be a string!';   
         username = username.trim();
@@ -309,57 +306,34 @@ let exportedMethods = {
         if(comment.length == 0){
             throw 'comment must be nonempty!';
         }
-        //Make Database Query For Matching RunID
+
+        // Make Database Query For Matching RunID
         const gamesCollection = await games();
-        let userId = await usersData.getIdByUsername(username);
-        userId = userId._id.toString();
-        let date = new Date();
-        let addComment = {_id: ObjectId().toString(),'userId': userId, 'content': comment, date: date};
-        let gam = await gamesCollection.findOne({ runs: {$exists:  {_id: ObjectId(runId)} }} );
-        gam = gam.name;
-        let arr = await gamesCollection.updateOne(
-            { name: gam, "runs._id": ObjectId(runId) },
-            { "$push": {"runs.$.comments": addComment} });
-        if (arr.modifiedCount != 0) {
-            return addComment;
-        }
-        else {
+        let result = await gamesCollection.updateOne(
+            { "runs._id": ObjectId(runId) },
+            { "$push": {"runs.$.comments": {username: username, comment: comment}}});
+        if(result.modifiedCount != 0) {
+            return {username: username, comment: comment};
+        } else {
             throw "the comment didn't add";
         }
+    },
 
+    async allComments(runId) {
+        const gamesCollection = await games();
+        const game = await gamesCollection.findOne( {"runs._id": ObjectId(runId)} );
+        if(game === null){
+            throw 'No game exists with the supplied runId!';
+        }
+        let runs = game.runs;
+        let run;
+        for(let i=0; i<runs.length; i++){
+            if(runs[i]._id.toString() == runId){
+                run = runs[i];
+            }
+        }
+        return run.comments;
     }
-    // async allComments(runId, username) {
-    //     const gamesCollection = await games();
-    //     let gam = await gamesCollection.findOne({ runs: {$exists:  {_id: ObjectId(runId)} }} );
-    //     gam = gam.name;
-    //     let holder = await gamesCollection.aggregate([
-    //         {
-    //           "$match": {
-    //             "name": gam
-    //           }
-    //         },
-    //         {
-    //           "$unwind": "$runs"
-    //         },
-    //         {
-    //           "$match": {
-    //             "runs._id": ObjectId("605a3b3bc8bbb404f4e6b645")
-    //           }
-    //         },
-    //         {
-    //           "$replaceRoot": {
-    //             "newRoot": "$runs"
-    //           }
-    //         }
-    //       ])
-    //     console.log(holder);
-
-
-    //     // let arr = await gamesCollection.find(
-    //     //     { name: gam, "runs._id": ObjectId(runId)},
-    //     //      {find: {"runs.$.comments"} });
-    //          console.log(arr);
-    // }
 }
 
 module.exports = exportedMethods;

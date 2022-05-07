@@ -113,6 +113,7 @@ router.post('/like', async (req, res) => {
         res.sendStatus(500);
     }
 });
+
 router.post('/dislike', async (req, res) => {
     let runId = req.body.runId;
     let username = req.session.user.username;
@@ -181,33 +182,31 @@ router.post('/newComment', async (req, res) => {
         return;
     }
     try {
-        let newC = await gameData.newComment(runId, username, comment);
-        res.json({_id: newC._id, userId: newC.userId, content: newC.content, date: newC.date, username: req.session.user.username});
+        await gameData.newComment(runId, username, comment);
+        res.json({username: username, content: comment});
     } catch(e){
         console.log(e);
         res.sendStatus(500);
     }
 }),
 
-//     router.post('/getComments', async (req, res) => {
-//         if(!req.body.runId){
-//             res.status(400).json({error:'ID is missing'});
-//             return;
-//         }
-//         if(typeof(req.body.runId)!='string' || req.body.runId.trim()===0){
-//             res.status(400).json({ error: 'runId has to be a non-empty string' });
-//             return;
-//         }
-//         try {
-//             let newC = await gameData.allComments(req.body.runId);
-//             console.log("made call")
-//             res.json({_id: newC._id, userId: newC.userId, content: newC.content, date: newC.date, username: req.session.user.username});
-//         } catch(e){
-//             console.log(e);
-//             res.sendStatus(500);
-//         }
-// });
-
-
+router.post('/getComments', async (req, res) => {
+    let runId = req.body.runId;
+    if(!runId){
+        res.status(400).json({error:'ID is missing'});
+        return;
+    }
+    if(typeof(runId)!='string' || runId.trim()===0){
+        res.status(400).json({ error: 'runId has to be a non-empty string' });
+        return;
+    }
+    try {
+        let comments = await gameData.allComments(runId);
+        res.json({comments: comments});
+    } catch(e){
+        console.log(e);
+        res.sendStatus(500);
+    }
+});
 
 module.exports = router;

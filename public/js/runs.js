@@ -1,8 +1,7 @@
 (async function ($) {
-
     let unverified = $('#unverified-commentPost');
     let commPostForm = $('#verified-commentPost');
-    let commError = $('#commError');
+    let error = $('#error');
     let likes = $('#likes');
     let dislikes = $('#dislikes');
     let likesVal = $('#likeVal');
@@ -14,6 +13,7 @@
     let comment = $('#commDesc');
     let time = $('#time');
     let commentsList = $('#commentsList');
+
     //Determines if form can be shown based on the users authentification
     let status = await $.ajax({
         url: '/authenticated',
@@ -29,6 +29,7 @@
 
     likes.append(`<p id="likeShown">${likesVal.val()}</p>`)
     dislikes.append(`<p id="dislikeShown">${dislikesVal.val()}</p>`)
+
     //like and dislike increment
     time = time.val();
     let h = Math.floor(time/3600)/10;
@@ -93,22 +94,25 @@
                 type: 'Post',
                 data: data
             })
-            commentsList.append(`<li>${addComm.username} <br>${addComm.content}</li>`);
+            commentsList.append(`<div><li>${addComm.username} <br>${addComm.content}</li></div>`);
             }catch {
                 console.log("run comment data function broke")
         }
         }
     })
-    //Pulls All comments from game
-    // try{
-    //     let comments = await $.ajax({
-    //         url: '/runs/getComments',
-    //         type: 'Post',
-    //         data: {runId: runId.val()}
-    //     });
-    //     console.log("happening")
-    //     } catch(e){
-    //     console.log('empty');
-    // }
 
+    // Pulls All comments from game
+    try{
+        let comments = await $.ajax({
+            url: '/runs/getComments',
+            type: 'Post',
+            data: {runId: runId.val()}
+        });
+        for(let i=0; i<comments.comments.length; i++){
+            commentsList.append(`<div><li>${comments.comments[i].username} <br>${comments.comments[i].comment}</li></div>`);
+        }
+    } catch (e) {
+        error.text(e);
+        error.show();
+    }
 })(window.jQuery);
