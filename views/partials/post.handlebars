@@ -1,16 +1,16 @@
 <article>
     <h1>Forums</h1>
     <p class="error" id="postError" hidden></p>
-    <div>
-        <h2>{{post.title}} by <a href="/profile/{{postUser}}">{{postUser}}</a></h2>
-        <p>{{post.body}}</p>  
+    <div id="format">
+        <h2>{{{post.title}}} by <a href="/profileVisit/{{postUser}}">{{postUser}}</a></h2>
+        {{{post.body}}} 
         <div>
             <h3>Comments</h3> 
             <div id="commentList">
                 {{#if hasComments}}
                 {{#each comments}}
                 <div>
-                    <p class="commentBody">{{content}} </p>
+                    {{{content}}}
                     <h4 class="commentTitle">
                         {{username}} <br>
                         {{date}}
@@ -32,7 +32,9 @@
 
         <form id="verified-commentForm" action="/newComment" method="POST">
             <label for="commentBody">Description</label> <br>
-            <input type="text" id="commentBody" name="commentBody"> <br>
+            <textarea type="text" id="commentBody" name="commentBody" rows="4" cols="50"> 
+            </textarea>
+            <br>
             <input type="text" id="commentUser" name="commentUser" value="{{username}}" hidden>
             <input type="text" id="postId" name="postId" value="{{post._id}}" hidden>
             <button type="submit" class="btn">Comment</button>

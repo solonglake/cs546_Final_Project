@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const data = require('../data');
 const usersData = data.users;
+const xss = require('xss');
 
 router.get('/', async (req, res) => {
     try {
@@ -28,7 +29,7 @@ router.get('/:id', async (req, res) => {
         try {
             const result = await usersData.verifyUser(req.params.id);
             if(result.username){
-                res.render('partials/verify', { title: 'Account Confimed', username: result.username});
+                res.render('partials/verify', { title: 'Account Confimed', username: xss(result.username)});
             } else {
                 res.status(500).json({ error: 'Internal Server Error' });
             }
@@ -128,7 +129,7 @@ router.post('/', async (req, res) => {
 
         // database call and rendering
         try {
-            const result = await usersData.createUser(username, password, passwordConfirm, email);
+            const result = await usersData.createUser(xss(username), password, passwordConfirm, email);
             if(result.userInserted){
                 res.render('partials/unverified', { title: 'Verify Your Account', username: username});
             } else {

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const data = require('../data');
 const usersData = data.users;
+const xss = require('xss');
 
 router.get('/', async (req, res) => {
     try {
@@ -59,7 +60,7 @@ router.post('/', async (req, res) => {
         try {
             const result = await usersData.checkUser(username, password);
             if(result.authenticated){
-                req.session.user = { username: username };
+                req.session.user = { username: xss(username) };
                 res.redirect('/');
             } else {
                 res.status(500).json({ error: 'Internal Server Error' });
