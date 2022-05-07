@@ -3,10 +3,13 @@ const router = express.Router();
 const data = require('../data');
 const forumsData = data.forums;
 const usersData = data.users;
+const xss = require('xss');
+const MarkdownIt = require('markdown-it/lib');
+const md = new MarkdownIt();
 router.get('/', async (req, res) => {
     try {
         if(req.session.user) {
-            res.render('partials/forums', { title: 'Forums',js: 'forums.js',username: req.session.user.username});
+            res.render('partials/forums', { title: 'Forums',js: 'forums.js',username: xss(req.session.user.username)});
         } else {
             res.render('partials/forums', { title: 'Forums',js: 'forums.js'});
         }
@@ -20,6 +23,8 @@ router.get('/posts/:id', async (req, res) => {
         req.params.id = await forumsData.checkId(req.params.id);
         const post = await forumsData.get(req.params.id);
         post.comments = await forumsData.formatComments(req.params.id);
+        post.title = md.render(post.title);
+        post.body = md.render(post.body);
         let userId = await forumsData.checkId(post.userId.toString());
         let postUser = await usersData.getUsername(userId);
         let hasComments = true;
@@ -27,7 +32,7 @@ router.get('/posts/:id', async (req, res) => {
             hasComments = false;
         }
         if(req.session.user) {
-            res.render('partials/post', { title: 'Forums',js: 'post.js',username: req.session.user.username, post: post, postUser: postUser, comments: post.comments, hasComments: hasComments});
+            res.render('partials/post', { title: 'Forums',js: 'post.js',username: xss(req.session.user.username), post: post, postUser: postUser, comments: post.comments, hasComments: hasComments});
         } else {
             res.render('partials/post', { title: 'Forums',js: 'post.js', post: post, postUser: postUser, comments: post.comments, hasComments: hasComments});
         }
@@ -59,7 +64,7 @@ router.post('/newPost', async (req, res) => {
         if(postTitle.trim().length == 0) status = {postInserted: false};
         if(postBody.trim().length == 0) status = {postInserted: false};
         try{
-        status = await forumsData.createPost(postTitle, postBody,username);    
+        status = await forumsData.createPost(xss(postTitle), xss(postBody),xss(username));    
         } catch(e){ 
             res.sendStatus(500);
         }
@@ -79,7 +84,7 @@ router.post('/newComment', async (req, res) => {
         if(commentBody.trim().length == 0) status = {commentInserted: false};
         if(commentUser.trim().length == 0) status = {commentInserted: false};
         try{
-        status = await forumsData.createComment(postId, commentBody,commentUser);    
+        status = await forumsData.createComment(xss(postId), xss(commentBody),xss(commentUser));    
         } catch(e){
             console.log(e);
             res.sendStatus(500);
