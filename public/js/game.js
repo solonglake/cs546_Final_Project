@@ -185,9 +185,6 @@
             if(status.success){
                 let t = data.runHour+"h "+data.runMin+"m "+data.runSec+"s";
                 $("#runsList").append(`<div><h2><a href=/runs/${status.id.toString()}>${t}</a> by <a href=/profileVisit/${data.runUser}>${data.runUser}</a> on ${status.date}</h2></div>`);
-            }
-            else{
-                runsList.append(`<div><h2><a href=/runs/${status.id}>${t}</a> by <a href=/profileVisit/${data.runUser}>${data.runUser}</a> on ${status.date} [${data.tags}]</h2></div>`);
             } else {
                 runError.text('Could not upload new run!');
                 runError.show();
