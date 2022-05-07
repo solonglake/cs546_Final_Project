@@ -20,6 +20,8 @@
     let tag2Search = $('#tag2Search');
     let tag3Search = $('#tag3Search');
     let tag4Search = $('#tag4Search');
+    let graph = $('#graph');
+    let graphDiv = $('#graphDiv');
 
     //Determines if form can be shown based on the users authentification
     let status = await $.ajax({
@@ -39,9 +41,27 @@
         data: {name: runGame}
     });
 
+    // graph data
+    let data = {
+        labels: [],
+        datasets: [{
+            label: 'Run Speed Over Time (Seconds)',
+            data: [],
+            fill: false,
+            borderColor: 'rgb(75, 192, 192)',
+            tension: 0.1
+        }]
+    };
+
     //Appends All runs Into runs Div
+    let fastestTime = Infinity;
     for(id in runs){
         let totalTime = runs[id].time;
+        if(totalTime < fastestTime){
+            fastestTime = totalTime;
+            data.datasets[0].data.push(fastestTime);
+            data.labels.push(runs[id].date);
+        }
 
         let h = Math.floor(runs[id].time/3600)/10;
         let m = Math.floor((runs[id].time%3600)/60)/10;
@@ -63,6 +83,23 @@
     if(runs.length === 0){
         runsList.append('<p>There are currently no runs</p>');
     }
+
+    // graph
+    let config = {
+        type: 'line',
+        data: data,
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    };
+    let myChart = new Chart(
+        graph,
+        config
+    );
 
     //Tag Search Form Submit Action
     tagSearchForm.submit(async function (event) {
@@ -97,8 +134,27 @@
         }      
 
         runsList.empty();
+        graphDiv.empty();
+        graphDiv.append(`<canvas id="graph"></canvas>`);
+        graph = $('#graph');
+        data = {
+            labels: [],
+            datasets: [{
+                label: `Run Speed Over Time (Seconds) for ${tags}`,
+                data: [],
+                fill: false,
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1
+            }]
+        };
+        fastestTime = Infinity;
         for(id in validRuns){
             let totalTime = validRuns[id].time;
+            if(totalTime < fastestTime){
+                fastestTime = totalTime;
+                data.datasets[0].data.push(fastestTime);
+                data.labels.push(validRuns[id].date);
+            }
 
             let h = Math.floor(validRuns[id].time/3600)/10;
             let m = Math.floor((validRuns[id].time%3600)/60)/10;
@@ -115,7 +171,7 @@
                 s = totalTime;
             }
             let t = h+"h "+m+"m "+s+"s";
-            runsList.append(`<div><h2><a href =/runs/${validRuns[id]._id}>${t}</a> by <a href=/profileVisit/${validRuns[id].runUser }>${validRuns[id].runUser}</a> on ${validRuns[id].date} [${validRuns[id].tags}]</h2></div>`);
+            runsList.append(`<div><h2><a href =/runs/${validRuns[id]._id}>${t}</a> by <a href=/profileVisit/${validRuns[id].runUser }>${validRuns[id].runUser}</a> on ${validRuns[id].date} [${validRuns[id].tags}]</h2></div>`);          
         }
         if(validRuns.length === 0){
             let message = 'No Runs with Supplied Tags';
@@ -124,6 +180,22 @@
             }
             runsList.append(`<p>${message}</p>`);
         }
+        config = {
+            type: 'line',
+            data: data,
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        };
+        console.log(config);
+        myChart = new Chart(
+            graph,
+            config
+        );
     });
 
     //Run Post Form Submit Action
