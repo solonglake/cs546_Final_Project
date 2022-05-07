@@ -13,6 +13,7 @@
     let commDesc = $('#commDesc');
     let commUser = $('#commUser');
     let time = $('#time');
+    let commentsList = $('#commentsList');
     //Determines if form can be shown based on the users authentification
     let status = await $.ajax({
         url: '/authenticated',
@@ -76,7 +77,23 @@
         }
     });
 
-    
+    commPostForm.submit(async function (event) {
+        event.preventDefault();
+        let data = {
+            runId: runId.val(),
+            user: commUser.val(),
+            comment: commDesc.val()
+        };
+        try {
+            let addComm = await$.ajax({
+            url: '/runs/newComments',
+            type: 'Post',
+            data: data
+        })
+
+        }
+
+    })
     
     //Pulls All comments from game
     try{
@@ -85,7 +102,7 @@
             type: 'Post',
             data: {name: runId}
         });
-        
+        commentsList.append
         //Appends All runs Into runs Div
         for(id in comments){
             //loop though comments and output here
