@@ -4,6 +4,7 @@ const users = mongoCollections.users;
 const usersData = require('./users');
 const games = mongoCollections.games;
 const gamesData = require('./games');
+const { game } = require('.');
 
 let exportedMethods = {
     async createRun(username, gameName, body, time,videoLink, tags){
@@ -102,6 +103,14 @@ let exportedMethods = {
         
         return {success: true, id: RunId, time: t, date: newRun.date};
     },
+
+    async getGameByRunId (runId) {
+        const gamesCollection = await games();
+        let holder = await gamesCollection.findOne({ runs: {$exists:  {_id: runId} }} );
+        holder = holder.name;
+        return holder;
+    },
+
     async getAllRunsGame(gameName) {
         if (arguments.length != 1) {
             throw "Need a gameId";
@@ -276,7 +285,81 @@ let exportedMethods = {
            runs.push(run);
        }
        return runs;
+    },
+
+    async newComment(runId, username, comment) {
+        //id Validation
+        if(!runId) throw 'Run ID  must be supplied!';
+        if(typeof(runId) != 'string') throw 'Run ID  must be a string!';   
+        runId = runId.trim();
+        if(runId.length == 0){
+            throw 'Run ID  must be nonempty!';
+        }
+        if(!ObjectId.isValid(runId)) throw "Run ID must be a valid ObjectID!"
+        //username validation
+        if(!username) throw 'username must be supplied!';
+        if(typeof(username) != 'string') throw 'username  must be a string!';   
+        username = username.trim();
+        if(username.length == 0){
+            throw 'username  must be nonempty!';
+        }
+        if(!comment) throw 'comment  must be supplied!';
+        if(typeof(comment) != 'string') throw 'comment  must be a string!';   
+        comment = comment.trim();
+        if(comment.length == 0){
+            throw 'comment must be nonempty!';
+        }
+        //Make Database Query For Matching RunID
+        const gamesCollection = await games();
+        let userId = await usersData.getIdByUsername(username);
+        userId = userId._id.toString();
+        let date = new Date();
+        let addComment = {_id: ObjectId().toString(),'userId': userId, 'content': comment, date: date};
+        let gam = await gamesCollection.findOne({ runs: {$exists:  {_id: ObjectId(runId)} }} );
+        gam = gam.name;
+        let arr = await gamesCollection.updateOne(
+            { name: gam, "runs._id": ObjectId(runId) },
+            { "$push": {"runs.$.comments": addComment} });
+        if (arr.modifiedCount != 0) {
+            return addComment;
+        }
+        else {
+            throw "the comment didn't add";
+        }
+
     }
-};
+    // async allComments(runId, username) {
+    //     const gamesCollection = await games();
+    //     let gam = await gamesCollection.findOne({ runs: {$exists:  {_id: ObjectId(runId)} }} );
+    //     gam = gam.name;
+    //     let holder = await gamesCollection.aggregate([
+    //         {
+    //           "$match": {
+    //             "name": gam
+    //           }
+    //         },
+    //         {
+    //           "$unwind": "$runs"
+    //         },
+    //         {
+    //           "$match": {
+    //             "runs._id": ObjectId("605a3b3bc8bbb404f4e6b645")
+    //           }
+    //         },
+    //         {
+    //           "$replaceRoot": {
+    //             "newRoot": "$runs"
+    //           }
+    //         }
+    //       ])
+    //     console.log(holder);
+
+
+    //     // let arr = await gamesCollection.find(
+    //     //     { name: gam, "runs._id": ObjectId(runId)},
+    //     //      {find: {"runs.$.comments"} });
+    //          console.log(arr);
+    // }
+}
 
 module.exports = exportedMethods;

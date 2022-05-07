@@ -3,6 +3,7 @@ const router = express.Router();
 const data = require('../data');
 const usersData = data.users;
 const forumsData = data.forums;
+const runsData = data.game;
 
 router.get('/:id', async (req, res) => {
     try {
@@ -48,6 +49,16 @@ router.get('/:id', async (req, res) => {
         res.sendStatus(500);
     }
 });
+
+router.post('/gameName', async (req, res) => {
+    let holder = Object.keys(req.body);
+    let gameName = await runsData.getGameByRunId(holder[0]);
+    if (!gameName) {
+        res.status(400).json({ error: 'ID is missing' });
+        return;
+    }
+    res.json(gameName);
+})
 
 router.post('/profilePic', async (req, res) => {
     try {

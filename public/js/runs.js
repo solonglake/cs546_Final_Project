@@ -10,8 +10,8 @@
     let likesCt = $('#likesCt');
     let dislikesCt = $('#dislikesCt');
     let runId = $('#runId');
-    let commDesc = $('#commDesc');
-    let commUser = $('#commUser');
+    let commentUser = $('#commUser');
+    let comment = $('#commDesc');
     let time = $('#time');
     let commentsList = $('#commentsList');
     //Determines if form can be shown based on the users authentification
@@ -81,40 +81,34 @@
         event.preventDefault();
         let data = {
             runId: runId.val(),
-            user: commUser.val(),
-            comment: commDesc.val()
+            comment: comment.val()
         };
-        try {
-            let addComm = await$.ajax({
-            url: '/runs/newComments',
-            type: 'Post',
-            data: data
-        })
-
+        if (!runId.val() || !comment.val()) {
+            alert("you need to enter all fields")
         }
-
+        else {
+            try {
+                let addComm = await $.ajax({
+                url: '/runs/newComment',
+                type: 'Post',
+                data: data
+            })
+            commentsList.append(`<li>${addComm.username} <br>${addComm.content}</li>`);
+            }catch {
+                console.log("run comment data function broke")
+        }
+        }
     })
-    
     //Pulls All comments from game
-    try{
-        let comments = await $.ajax({
-            url: '/runs/getComments',
-            type: 'Post',
-            data: {name: runId}
-        });
-        commentsList.append
-        //Appends All runs Into runs Div
-        for(id in comments){
-            //loop though comments and output here
-        }
-    } catch(e){
-        console.log('empty');
-    }
-
-
-    //Run Post Form Submit Action
-    commPostForm.submit(async function (event) {
-        //comments 
-    });
+    // try{
+    //     let comments = await $.ajax({
+    //         url: '/runs/getComments',
+    //         type: 'Post',
+    //         data: {runId: runId.val()}
+    //     });
+    //     console.log("happening")
+    //     } catch(e){
+    //     console.log('empty');
+    // }
 
 })(window.jQuery);

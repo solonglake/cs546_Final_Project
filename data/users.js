@@ -90,7 +90,6 @@ let exportedMethods = {
               pass: process.env.NODE_MAILER_PASS,
             },
         });
-
         // send email
         await transport.sendMail({
             from: process.env.NODE_MAILER_USER,
@@ -122,13 +121,13 @@ let exportedMethods = {
         }
         return {userInserted: true};
     },
-    async getUsername(id){
-        if (!id) throw 'ID must be supplied!';
-        if (typeof id !== 'string') throw 'ID must be a string';
-        id = id.trim();
-        if (id.length == 0) throw 'ID must be a nonempty string';
-        if (!ObjectId.isValid(id)) throw 'invalid object ID';
-    },
+    // async getUsername(id){
+    //     if (!id) throw 'ID must be supplied!';
+    //     if (typeof id !== 'string') throw 'ID must be a string';
+    //     id = id.trim();
+    //     if (id.length == 0) throw 'ID must be a nonempty string';
+    //     if (!ObjectId.isValid(id)) throw 'invalid object ID';
+    // },
     async getUsername(id){
         if (!id) throw 'ID must be supplied!';
         if (typeof id !== 'string') throw 'ID must be a string';
@@ -214,7 +213,22 @@ let exportedMethods = {
         );
         return {username: user.username};
     },
+    async getIdByUsername(username)  {
+        if (!username) {
+            throw 'you must enter a username';
+        }
+        if (typeof(username) != 'string') {
+            throw "useranem must be a string"
+        }
+        username = username.trim();
+        if (username.length < 1) {
+            throw "useranme must be longer";
+        }
+        let usersCollection = await users();
+        let answer = await usersCollection.findOne({username: username});
+        return answer;
 
+    },
     async changeBio(username, bio){
         // input format checking
         if(!username){
