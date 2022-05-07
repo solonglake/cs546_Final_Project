@@ -10,8 +10,8 @@
     let likesCt = $('#likesCt');
     let dislikesCt = $('#dislikesCt');
     let runId = $('#runId');
-    let commDesc = $('#commDesc');
-    let commUser = $('#commUser');
+    let commentUser = $('#commentUser');
+    let commen = $('#comment');
     let time = $('#time');
     //Determines if form can be shown based on the users authentification
     let status = await $.ajax({

@@ -284,6 +284,32 @@ let exportedMethods = {
            runs.push(run);
        }
        return runs;
+    },
+
+    async comment(runId) {
+        //Input Validation
+        if(!runId) throw 'Run ID  must be supplied!';
+        if(typeof(id) != 'string') throw 'Run ID  must be a string!';   
+        runId = runId.trim();
+        if(runId.length == 0){
+            throw 'Run ID  must be nonempty!';
+        }
+        if(!ObjectId.isValid(runId)) throw "Run ID must be a valid ObjectID!"
+
+        //Make Database Query For Matching RunID
+        const gamesCollection = await games();
+        const game = await gamesCollection.findOne({'runs._id': ObjectId(runId)});
+        console.log(game);
+        console.log("made it here");
+        let ret;
+        let curr;
+        if (game === null) throw 'No run with that id';
+        for(let i = 0; i<game.runs.length; i++){
+            if(game.runs[i]._id.toString() == ObjectId(runId)){
+                curr = game.runs[i].dislikes;
+                ret = game.runs[i];
+            }
+        }
     }
 };
 

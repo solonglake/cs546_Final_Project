@@ -86,6 +86,90 @@ router.post('/dislike', async (req, res) => {
     }
 });
 
+router.post('/like', async (req, res) => {
+    let runId = req.body.runId;
+    let username = req.session.user.username;
+    console.log(username);
+    if(!runId){
+        res.status(400).json({error:'ID is missing'});
+        return;
+    }
+    if(!username){
+        res.status(400).json({error:'username is missing'});
+        return;
+    }
+    if(typeof(runId)!='string' || runId.trim()===0){
+        res.status(400).json({ error: 'runId has to be a non-empty string' });
+        return;
+    }
+    if(typeof(username)!='string' || username.trim()===0){
+        res.status(400).json({ error: 'username has to be a non-empty string' });
+        return;
+    }
+    try {
+        let run = await gameData.incrementLike(runId,username);
+        res.json(run);
+    } catch(e){
+        console.log(e);
+        res.sendStatus(500);
+    }
+});
+router.post('/dislike', async (req, res) => {
+    let runId = req.body.runId;
+    let username = req.session.user.username;
+    if(!runId){
+        res.status(400).json({error:'ID is missing'});
+        return;
+    }
+    if(!username){
+        res.status(400).json({error:'username is missing'});
+        return;
+    }
+    if(typeof(runId)!='string' || runId.trim()===0){
+        res.status(400).json({ error: 'runId has to be a non-empty string' });
+        return;
+    }
+    if(typeof(username)!='string' || username.trim()===0){
+        res.status(400).json({ error: 'username has to be a non-empty string' });
+        return;
+    }
+    try {
+        let run = await gameData.incrementDislike(runId,username);
+        res.json(run);
+    } catch(e){
+        console.log(e);
+        res.sendStatus(500);
+    }
+});
+
+router.post('/newComment', async (req, res) => {
+    let runId = req.body.runId;
+    let username = req.session.user.username;
+    if(!runId){
+        res.status(400).json({error:'ID is missing'});
+        return;
+    }
+    if(!username){
+        res.status(400).json({error:'username is missing'});
+        return;
+    }
+    if(typeof(runId)!='string' || runId.trim()===0){
+        res.status(400).json({ error: 'runId has to be a non-empty string' });
+        return;
+    }
+    if(typeof(username)!='string' || username.trim()===0){
+        res.status(400).json({ error: 'username has to be a non-empty string' });
+        return;
+    }
+    try {
+        let run = await gameData.comment(runId);
+        res.json(run);
+    } catch(e){
+        console.log(e);
+        res.sendStatus(500);
+    }
+});
+
 
 
 module.exports = router;
