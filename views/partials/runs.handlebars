@@ -1,0 +1,40 @@
+<article>
+    <h1>{{name}}'s Run</h1>
+    <p class="error" id="commError" hidden></p>
+    <input type="text" id="runId" name="runId" value="{{runId}}" hidden>
+    <input type="number" id="likeVal" name="likeVal" value="{{likes}}" hidden>
+    <input type="number" id="dislikeVal" name="dislikeVal" value="{{dislikes}}" hidden>
+    <div>
+        <h2>{{Tag}}</h2> <br>
+        <input type="number" id="time" name="time" value="{{time}}" hidden>
+        <p id="displayTime"></p>
+        <p>{{body}}</p> <br>
+        <form id="likes" action="/like" method="POST">
+            <input type="image" id="likesCt" src="../../public/imgs/like.png" alt="Submit">
+            
+        </form>
+        
+        <form id="dislikes" action="/dislike" method="POST">
+            <input type="image" id="dislikesCt" src="../../public/imgs/dislike.png" alt="Submit">
+            
+        </form>
+            
+        <iframe height="315" width="560" src="{{video}}" allowfullscreen>
+            
+        </iframe>
+    </div>
+    <div>
+        <p id="unverified-commentPost">
+            You Must Be Logged In To Make A Comment.
+        </p>
+    <form id ="verified-commentPost" action="/newComment" method="POST">
+        <label for="commDesc">Title</label> <br>
+        <input type="text" id="commDesc" name="commDesc"> <br>
+        <input type="text" id="commUser" name="commUser" value="{{user}}" hidden>
+        <button type="submit" class="btn">Comment</button>
+    </form>
+    </div>
+    <form action='/' method='GET'>
+        <button type='submit'>Home</button>
+    </form>
+</article>
