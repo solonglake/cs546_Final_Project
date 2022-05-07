@@ -41,9 +41,22 @@
 
     //Appends All runs Into runs Div
     for(id in runs){
+        let totalTime = runs[id].time;
+
         let h = Math.floor(runs[id].time/3600)/10;
         let m = Math.floor((runs[id].time%3600)/60)/10;
         let s = runs[id].time%3600%60;
+        if(h<1){
+            h=0;
+            m = Math.floor(totalTime/60)/10;
+            s = totalTime%60;
+        } 
+        else if(m<1&&h<1){
+            h = 0;
+            m = 0;
+            s = totalTime;
+        }
+
         let t = h+"h "+m+"m "+s+"s";
         runsList.append(`<div><h2><a href =/runs/${runs[id]._id}>${t}</a> by <a href=/profileVisit/${runs[id].runUser }>${runs[id].runUser}</a> on ${runs[id].date} [${runs[id].tags}]</h2></div>`);
     }
@@ -85,9 +98,22 @@
 
         runsList.empty();
         for(id in validRuns){
+            let totalTime = validRuns[id].time;
+
             let h = Math.floor(validRuns[id].time/3600)/10;
             let m = Math.floor((validRuns[id].time%3600)/60)/10;
             let s = validRuns[id].time%3600%60;
+
+            if(h<1){
+                h=0;
+                m = Math.floor(totalTime/60)/10;
+                s = totalTime%60;
+            } 
+            else if(m<1&&h<1){
+                h = 0;
+                m = 0;
+                s = totalTime;
+            }
             let t = h+"h "+m+"m "+s+"s";
             runsList.append(`<div><h2><a href =/runs/${validRuns[id]._id}>${t}</a> by <a href=/profileVisit/${validRuns[id].runUser }>${validRuns[id].runUser}</a> on ${validRuns[id].date} [${validRuns[id].tags}]</h2></div>`);
         }
