@@ -20,11 +20,12 @@ router.get('/:id', async (req, res) => {
 
     try {
         let run = await gameData.getRun(runId);
+        let gamename = await gameData.getGameByRunId(runId);
         let user = req.session.user;
         if(user)
-            res.render('partials/runs', { title: 'Runs', user: user.username, name: run.runUser, Tags: run.tags, video:run.video, body: run.body, likes: run.likes, dislikes: run.dislikes, time: run.time, runId: runId, js: 'runs.js' });
+            res.render('partials/runs', { title: 'Runs', user: user.username, name: run.runUser, gamename:gamename, Tags: run.tags, video:run.video, body: run.body, likes: run.likes, dislikes: run.dislikes, time: run.time, runId: runId, js: 'runs.js' });
         else{
-            res.render('partials/runs', { title: 'Runs', name: run.runUser, Tags: run.tags, video:run.video, body: run.body, likes: run.likes, dislikes: run.dislikes, time: run.time, runId: runId, js: 'runs.js' });
+            res.render('partials/runs', { title: 'Runs', name: run.runUser, gamename: gamename, Tags: run.tags, video:run.video, body: run.body, likes: run.likes, dislikes: run.dislikes, time: run.time, runId: runId, js: 'runs.js' });
         } 
             
     } catch (e) {
