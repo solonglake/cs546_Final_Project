@@ -95,9 +95,10 @@
                 data: data
             })
             commentsList.append(`<div><li>${addComm.username} <br>${addComm.content}</li></div>`);
-            }catch {
-                console.log("run comment data function broke")
-        }
+            } catch (e) {
+                error.text(e);
+                error.show();
+            }
         }
     })
 

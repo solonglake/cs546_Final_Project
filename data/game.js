@@ -55,6 +55,18 @@ let exportedMethods = {
         if(game === null){
             throw 'Game with supplied gameName does not exist!';
         }
+
+        // count if the user has already posted 10 runs to the specific game
+        let count = 0;
+        for(let i=0; i<game.runs.length; i++){
+            if(game.runs[i].runUser === username){
+                count++;
+            }
+        }
+        if(count >= 10){
+            throw 'User has posted the maximum limit of runs to this specific game!';
+        }
+
         let RunId = new ObjectId();
 
         // actually add the run

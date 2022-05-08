@@ -62,7 +62,7 @@ router.post('/newRun', async (req, res) => {
             try{   
                 status = await runsData.createRun(xss(username), xss(gameName), xss(runBody), xss(runTime), xss(runVideo), tags);    
             } catch (e) {
-                status = {success: false};
+                status = {failure: e};
             }
         } 
 
