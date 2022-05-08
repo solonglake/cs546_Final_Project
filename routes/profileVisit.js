@@ -180,10 +180,24 @@ router.post('/runs', async (req, res) => {
             res.status(404);
             return;
         }
-        
-        let runs = await usersData.getRuns(username);    
-        res.json(runs);
-    } catch (e) {
+
+        try{
+            let runIds = await usersData.getRuns(username);
+            let runs = [];
+            for(let i=0; i<runIds.runs.length; i++){
+                try{
+                    let run = await runsData.getRun(runIds.runs[i]);
+                    runs.push(run);
+                } catch (e) {
+                    console.log(e);
+                }
+            }
+            res.json({runs: runs});
+        } catch (e) {
+            console.log(e);
+        }
+    }
+    catch (e) {
         res.sendStatus(500);
     }
 });

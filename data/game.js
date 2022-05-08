@@ -149,7 +149,7 @@ let exportedMethods = {
         if(!ObjectId.isValid(id)) throw "Run ID must be a valid ObjectID!"
         //Make Database Query For Matching RunID
         const gamesCollection = await games();
-        
+
         const game = await gamesCollection.findOne({'runs._id':ObjectId(id)});
         
         let ret;
@@ -322,9 +322,12 @@ let exportedMethods = {
 
         // Make Database Query For Matching RunID
         const gamesCollection = await games();
+        let commentId = new ObjectId();
+        let today = new Date();
+        let date = (today.getMonth()+1)+'-'+today.getDate()+'-'+today.getFullYear();
         let result = await gamesCollection.updateOne(
             { "runs._id": ObjectId(runId) },
-            { "$push": {"runs.$.comments": {username: username, comment: comment}}});
+            { "$push": {"runs.$.comments": {_id: commentId, username: username, date: date, comment: comment}}});
         if(result.modifiedCount != 0) {
             return {username: username, comment: comment};
         } else {
@@ -365,13 +368,11 @@ let exportedMethods = {
             throw 'Could not remove run from game!';
         }
         result = await usersCollection.updateOne({
-            "runs._id": ObjectId(runId)
+            "runs": runId
         },
         {
             "$pull": {
-                "runs": {
-                    "_id": ObjectId(runId)
-                }
+                "runs": runId
             }
         });
         if(result.modifiedCount === 0){

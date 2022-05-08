@@ -43,38 +43,42 @@
     }
 
     // load users runs
-    const runs = await $.ajax({
-        url: '/profileVisit/runs',
-        type: 'Post',
-        data: {username: username}
-    });
+    let runs;
+    try{
+        runs = await $.ajax({
+            url: '/profileVisit/runs',
+            type: 'Post',
+            data: {username: username}
+        });
+    } catch (e) {
+        console.log(e);
+    }
     if(runs.runs && runs.runs.length > 0){
         for(let num = 0; num < runs.runs.length; num++){
-            let holder = 'gameName/';
-
+            let data = {runs: runs.runs[num]._id}
             let runByGame = await $.ajax ({
-                url: holder,
+                url: '/game/gameName/',
                 type: 'Post',
-                data: runs.runs[num]._id
-        });
-        let totalTime = runs.runs[num].time;
-        let h = Math.floor(totalTime/3600);
-        let m = Math.floor((totalTime%3600)/60);
-        let s = totalTime%3600%60;
+                data: data
+            });
+            let totalTime = runs.runs[num].time;
+            let h = Math.floor(totalTime/3600);
+            let m = Math.floor((totalTime%3600)/60);
+            let s = totalTime%3600%60;
 
-        if(h<1){
-            h=0;
-            m = Math.floor(totalTime/60);
-            s = totalTime%60;
-        } 
-        else if(m<1&&h<1){
-            h = 0;
-            m = 0;
-            s = totalTime;
-        }
-        let t = h+"h "+m+"m "+s+"s";
-        //${runs.runs[num].time}${runByGame}${runs.runs[num].date}
-            runsList.append(`<li><a href ="/runs/${runs.runs[num]._id}">${t}</a>  <a href="/game/${runByGame}">${runByGame}</a>   ${runs.runs[num].date}  [${runs.runs[num].tags}]</li>`);
+            if(h<1){
+                h=0;
+                m = Math.floor(totalTime/60);
+                s = totalTime%60;
+            } 
+            else if(m<1&&h<1){
+                h = 0;
+                m = 0;
+                s = totalTime;
+            }
+            let t = h+"h "+m+"m "+s+"s";
+            //${runs.runs[num].time}${runByGame}${runs.runs[num].date}
+                runsList.append(`<li><a href ="/runs/${runs.runs[num]._id}">${t}</a>  <a href="/game/${runByGame}">${runByGame}</a>   ${runs.runs[num].date}  [${runs.runs[num].tags}]</li>`);
         }
     } else {
         runsDiv.text('No runs yet');
