@@ -23,7 +23,6 @@ router.get('/posts/:id', async (req, res) => {
         req.params.id = await forumsData.checkId(req.params.id);
         const post = await forumsData.get(req.params.id);
         post.comments = await forumsData.formatComments(req.params.id);
-        post.title = md.render(post.title);
         post.body = md.render(post.body);
         let userId = await forumsData.checkId(xss(post.userId.toString()));
         let postUser = await usersData.getUsername(xss(userId));

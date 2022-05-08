@@ -2,7 +2,7 @@
     <h1>Forums</h1>
     <p class="error" id="postError" hidden></p>
     <div id="format">
-        <h2>{{{post.title}}} by <a href="/profileVisit/{{postUser}}">{{postUser}}</a></h2>
+        <h2>{{post.title}} by <a href="/profileVisit/{{postUser}}">{{postUser}}</a></h2>
         {{{post.body}}} 
         <div>
             <h3>Comments</h3> 
@@ -32,8 +32,8 @@
 
         <form id="verified-commentForm" action="/newComment" method="POST">
             <label for="commentBody">Description</label> <br>
-            <textarea type="text" id="commentBody" name="commentBody" rows="4" cols="50"> 
-            </textarea>
+            <input type="text" id="commentBody" name="commentBody" > 
+            </input>
             <br>
             <input type="text" id="commentUser" name="commentUser" value="{{username}}" hidden>
             <input type="text" id="postId" name="postId" value="{{post._id}}" hidden>

@@ -2,12 +2,12 @@
     <h1>Games</h1>
     <p class="error" id="gamesError" hidden></p>
     <ul id="gamesList"></ul>
-    <img id="addGamePic" src="../../public/imgs/add.png" hidden>
+    <img id="addGamePic" src="../../public/imgs/add.png" alt="addGamePic" hidden>
     <form id="addGameForm" action="/games/add" method="POST" hidden>
         <label for="gamePicInput">Enter link to game picture</label> <br>
         <input type="text" name="gamePicInput" id="gamePicInput" autocomplete="off"/> <br>
         <label for="gameNameInput">Enter name of the game</label> <br>
-        <input type="text" name="gameNameInput" id="gameNameInput" autocomplete ="off" <br>
+        <input type="text" name="gameNameInput" id="gameNameInput" autocomplete ="off"/> <br>
         <button type="submit">Submit</button>
     </form>
     <form action='/' method='GET'>

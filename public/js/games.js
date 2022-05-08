@@ -14,9 +14,10 @@
     });
     if(games){
         for(let i=0; i<games.length; i++){
-            let img = $(`<a href="/game/${games[i].name}"><img src=${games[i].gamePic} class=gamePic alt=${games[i].name}></a>`);
+            let enc = encodeURIComponent(games[i].name);
+            let img = $(`<a href="/game/${enc}"><img src=${games[i].gamePic} class=gamePic alt=${enc}></a>`);
             let p = $(`<p>${games[i].name}</p>`);
-            let article = $('<article></article>');
+            let article = $('<li></li>');
             article.append(img);
             article.append(p);
             gamesList.append(article);
