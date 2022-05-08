@@ -32,12 +32,12 @@
 
     //like and dislike increment
     time = time.val();
-    let h = Math.floor(time/3600)/10;
-    let m = Math.floor((time%3600)/60)/10;
+    let h = Math.floor(time/3600);
+    let m = Math.floor((time%3600)/60);
     let s = time%3600%60;
     if(h<1){
         h = 0;
-        m = Math.floor(time/60)/10;
+        m = Math.floor(time/60);
         s = time%60;
     }
     else if(m<1&&h<1){

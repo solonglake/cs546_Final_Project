@@ -30,7 +30,7 @@ router.get('/', async (req, res) => {
 router.get('/profilePic', async (req, res) => {
     try {
         let username = req.session.user.username;
-        let link = await usersData.getProfilePic(username);    
+        let link = await usersData.getProfilePic(xss(username));    
         res.json(link);
     } catch (e) {
         res.sendStatus(500);
@@ -40,7 +40,7 @@ router.get('/profilePic', async (req, res) => {
 router.get('/posts', async (req, res) => {
     try {
         let username = req.session.user.username;
-        let posts = await forumsData.getAllUser(username);  
+        let posts = await forumsData.getAllUser(xss(username));  
         res.json(posts);
     } catch (e) {
         res.sendStatus(500);
@@ -50,7 +50,7 @@ router.get('/posts', async (req, res) => {
 router.get('/runs', async (req, res) => {
     try {
         let username = req.session.user.username;
-        let runs = await usersData.getRuns(username);
+        let runs = await usersData.getRuns(xss(username));
         res.json(runs);
     }
     catch (e) {
@@ -67,7 +67,7 @@ router.post('/profilePic', async (req, res) => {
         if(result === null){
             status = {success: false};
         } else {
-            status = await usersData.changeProfilePic(username, xss(profilePicInput));    
+            status = await usersData.changeProfilePic(xss(username), xss(profilePicInput));    
         }
         res.json(status);
     } catch (e) {     
@@ -87,7 +87,7 @@ router.post('/bio', async (req, res) => {
             validInput = false;
         }
         if(validInput){
-            let status = await usersData.changeBio(username, xss(bioInput));    
+            let status = await usersData.changeBio(xss(username), xss(bioInput));    
             res.json(status);
         } else {
             res.json({success: false});
@@ -100,7 +100,7 @@ router.post('/bio', async (req, res) => {
 router.get('/bio', async (req, res) => {
     try {
         let username = req.session.user.username;
-        let bio = await usersData.getBio(username);    
+        let bio = await usersData.getBio(xss(username));    
         res.json(bio);
     } catch (e) {
         res.sendStatus(500);
@@ -110,7 +110,7 @@ router.get('/bio', async (req, res) => {
 router.get('/runs', async (req, res) => {
     try {
         let username = req.session.user.username;
-        let runs = await usersData.getRuns(username);    
+        let runs = await usersData.getRuns(xss(username));    
         res.json(runs);
     } catch (e) {
         res.sendStatus(500);

@@ -27,7 +27,7 @@ router.get('/:id', async (req, res) => {
         
         // load confirmation page
         try {
-            const result = await usersData.verifyUser(req.params.id);
+            const result = await usersData.verifyUser(xss(req.params.id));
             if(result.username){
                 res.render('partials/verify', { title: 'Account Confimed', username: xss(result.username)});
             } else {
@@ -129,9 +129,9 @@ router.post('/', async (req, res) => {
 
         // database call and rendering
         try {
-            const result = await usersData.createUser(xss(username), password, passwordConfirm, email);
+            const result = await usersData.createUser(xss(username), xss(password), xss(passwordConfirm), xss(email));
             if(result.userInserted){
-                res.render('partials/unverified', { title: 'Verify Your Account', username: username});
+                res.render('partials/unverified', { title: 'Verify Your Account', username: xss(username)});
             } else {
                 res.status(500).json({ error: 'Internal Server Error' });
             }
