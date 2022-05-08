@@ -17,7 +17,7 @@ router.post('/getRuns', async (req, res) => {
 
         if(status.success){
             try{
-                let allRuns = await runsData.getAllRunsGame(name);
+                let allRuns = await runsData.getAllRunsGame(xss(name));
                 res.json(allRuns);
                 return;
             }catch(e){
@@ -58,18 +58,10 @@ router.post('/newRun', async (req, res) => {
         }
 
         if(status.success){
-            console.log(runHour);
-            console.log(runMin);
-            console.log(runSec);
-            console.log(runHour*3600);
-            console.log(runMin*60);
-            console.log((runHour*3600)+(runMin*60)+14)
-            console.log(typeof(runSec));
             let h = runHour*3600;
             let m = runMin*60;
 
             let runTime = (runHour*3600) + (runMin*60) + (runSec*1);
-            console.log(runTime);
             try{   
                 status = await runsData.createRun(xss(username), xss(gameName), xss(runBody), xss(runTime), xss(runVideo), tags);    
             } catch (e) {
@@ -87,9 +79,8 @@ router.post('/gameName', async (req, res) => {
     let runId = req.body.runs;
     let gamename;
     try {
-        gamename = await runsData.getGameByRunId(runId);
+        gamename = await runsData.getGameByRunId(xss(runId));
     } catch(e){
-        console.log(e); 
         res.sendStatus(500);   
     }
     res.json(gamename);
@@ -107,7 +98,8 @@ router.get('/:id', async (req, res) => {
             return;
         }
     
-        await gamesData.getGame(gamename);
+    try {
+        await gamesData.getGame(xss(gamename));
         if(req.session.user){
             res.render('partials/game', {title:gamename, name:gamename,username: req.session.user.username,js: 'game.js'});
         }

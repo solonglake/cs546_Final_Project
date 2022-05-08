@@ -18,7 +18,26 @@
     } else {
         commentForm.hide();
     }
-
+    try{
+        let status = await $.ajax({
+            url: '/forums/getComments',
+            type: 'Post',
+            data: {postId: postId.val()}
+        });
+        
+        for(comment of status.comments){
+            $("#commentList").append(`
+            <div>
+            <p class="commentBody">${comment.content}</p>
+            <h4 class="commentTitle">
+            ${comment.username} <br>
+            ${comment.date}
+            </h4>   
+            </div>`);
+            }
+    } catch (e) {
+        console.log(e);
+    }
     //Comment Form Submit Action
     commentForm.submit(async function (event) {
         event.preventDefault();

@@ -58,7 +58,7 @@ router.post('/', async (req, res) => {
 
         // attempt to log the user in
         try {
-            const result = await usersData.checkUser(username, password);
+            const result = await usersData.checkUser(xss(username), xss(password));
             if(result.authenticated){
                 req.session.user = { username: xss(username) };
                 res.redirect('/');
