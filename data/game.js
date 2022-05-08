@@ -348,6 +348,37 @@ let exportedMethods = {
             }
         }
         return run.comments;
+    },
+
+    async deleteRun(runId){
+        const gamesCollection = await games();
+        const usersCollection = await users();
+        let result = await gamesCollection.updateOne({
+            "runs._id": ObjectId(runId)
+        },
+        {
+            "$pull": {
+                "runs": {
+                    "_id": ObjectId(runId)
+                }
+            }
+        });
+        if(result.modifiedCount === 0){
+            throw 'Could not remove run from game!';
+        }
+        result = await usersCollection.updateOne({
+            "runs._id": ObjectId(runId)
+        },
+        {
+            "$pull": {
+                "runs": {
+                    "_id": ObjectId(runId)
+                }
+            }
+        });
+        if(result.modifiedCount === 0){
+            throw 'Could not remove run from user!';
+        }
     }
 }
 
