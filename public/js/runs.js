@@ -94,7 +94,7 @@
                 type: 'Post',
                 data: data
             })
-            commentsList.append(`<div><li>${addComm.username} <br>${addComm.content}</li></div>`);
+            commentsList.append(`<li><p>${addComm.username} <br>${addComm.content}</p></li>`);
             } catch (e) {
                 error.text(e);
                 error.show();
@@ -110,7 +110,7 @@
             data: {runId: runId.val()}
         });
         for(let i=0; i<comments.comments.length; i++){
-            commentsList.append(`<div><li>${comments.comments[i].username} <br>${comments.comments[i].comment}</li></div>`);
+            commentsList.append(`<li><p>${comments.comments[i].username} <br>${comments.comments[i].comment}</p></li>`);
         }
     } catch (e) {
         error.text(e);

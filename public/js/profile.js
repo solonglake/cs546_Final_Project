@@ -38,6 +38,7 @@
     });
     if(posts && posts.length > 0){
         for(id in posts){
+
             $("#postsDiv").append(`<a href="/forums/posts/${posts[id]._id}"><div><h2>${posts[id].title}</h2><p class="body">${posts[id].body}</p></div></a>`);
         }
     } else {
@@ -79,7 +80,8 @@
         }
         let t = h+"h "+m+"m "+s+"s";
         //${runs.runs[num].time}${runByGame}${runs.runs[num].date}
-            runsList.append(`<li><a href ="/runs/${runs.runs[num]._id}">${t}</a>  <a href="/game/${runByGame}">${runByGame}</a>   ${runs.runs[num].date}  [${runs.runs[num].tags}]</li>`);
+        let enc = encodeURIComponent(runByGame);
+            runsList.append(`<li><a href ="/runs/${runs.runs[num]._id}">${t}</a>  <a href="/game/${enc}">${runByGame}</a>   ${runs.runs[num].date}  [${runs.runs[num].tags}]</li>`);
         }
     } else {
         runsDiv.text('No runs yet');

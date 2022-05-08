@@ -535,18 +535,21 @@ const main = async () => {
 			await game.createRun('Sebastian', 'Terraria', 'Queen bee is terrifying', 3248,'https://www.youtube.com/embed/lZqrCof1Sjc', ['100%', 'Blindfolded'] );
 		} catch(e) {
 			console.log(e);
+			console.log('Failed successfully');
 		}
 		try {
 			await game.createRun('sebastian', 'Terraria', '', 4588,'https://www.youtube.com/embed/lZqrCof1Sjc', ['100%', 'Blindfolded'] );
 		} catch(e) {
 			console.log(e);
+			console.log('Failed successfully');
 		}
 	 
 	try {
-		idHolder = await game.createRun('generalKenobi', 'Flappy Bird','I got so far', 4568,"https://www.youtube.com/embed/O5VYqv6Fyec", ['Blindfolded', 'Glitchless'] );
+		await game.createRun('generalKenobi', 'Flappy Bird','I got so far', 4568,"https://www.youtube.com/embed/O5VYqv6Fyec", ['Blindfolded', 'Glitchless'] );
 	}
 	catch (e) {
 		console.log(e);
+		console.log('Failed successfully');
 	}
 	} catch(e) {
 		console.log(e);
