@@ -13,9 +13,7 @@ let exportedMethods = {
         if(!videoLink) throw 'videoLink must be supplied!';
         if(!tags) throw 'tags must be supplied!';
         if(!body) throw 'body must be supplied!';
-        console.log(time);
         let t = Number(time);
-        console.log(t);
         if(typeof(username) != 'string') throw 'Username must be a string!';
         if(typeof(gameName) != 'string') throw 'gameName must be a string!';
         if(typeof(t) != 'number') throw 'Time must be an integer!';
@@ -367,13 +365,11 @@ let exportedMethods = {
             throw 'Could not remove run from game!';
         }
         result = await usersCollection.updateOne({
-            "runs._id": ObjectId(runId)
+            "runs": runId
         },
         {
             "$pull": {
-                "runs": {
-                    "_id": ObjectId(runId)
-                }
+                "runs": runId
             }
         });
         if(result.modifiedCount === 0){
