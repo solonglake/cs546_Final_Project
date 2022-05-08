@@ -93,9 +93,9 @@ let exportedMethods = {
         //Check if user has runs property, if not make it
         let userRun = user.runs;
         if(userRun){
-            userRun.push(newRun);
+            userRun.push(RunId.toString());
         } else {
-            userRun = [newRun];
+            userRun = [RunId.toString()];
         }
         usersCollection.updateOne(
             { username: username }, 
@@ -151,7 +151,7 @@ let exportedMethods = {
         if(!ObjectId.isValid(id)) throw "Run ID must be a valid ObjectID!"
         //Make Database Query For Matching RunID
         const gamesCollection = await games();
-        
+
         const game = await gamesCollection.findOne({'runs._id':ObjectId(id)});
         
         let ret;

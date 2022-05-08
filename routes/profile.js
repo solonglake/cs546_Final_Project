@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const data = require('../data');
 const usersData = data.users;
+const gameData = data.game;
 const forumsData = data.forums;
 const xss = require('xss');
 
@@ -50,8 +51,21 @@ router.get('/posts', async (req, res) => {
 router.get('/runs', async (req, res) => {
     try {
         let username = req.session.user.username;
-        let runs = await usersData.getRuns(xss(username));
-        res.json(runs);
+        try{
+            let runIds = await usersData.getRuns(username);
+            let runs = [];
+            for(let i=0; i<runIds.runs.length; i++){
+                try{
+                    let run = await gameData.getRun(runIds.runs[i]);
+                    runs.push(run);
+                } catch (e) {
+                    console.log(e);
+                }
+            }
+            res.json({runs: runs});
+        } catch (e) {
+            console.log(e);
+        }
     }
     catch (e) {
         res.sendStatus(500);

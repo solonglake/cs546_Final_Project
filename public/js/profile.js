@@ -38,22 +38,27 @@
     });
     if(posts && posts.length > 0){
         for(id in posts){
-            $("#postsDiv").append(`<div><h2>${posts[id].title}</h2><p>${posts[id].body}</p></div>`);
+            $("#postsDiv").append(`<a href="/forums/posts/${posts[id]._id}"><div><h2>${posts[id].title}</h2><p class="body">${posts[id].body}</p></div></a>`);
         }
     } else {
         postsDiv.text('No posts yet');
     }
 
     // load users runs
-    const runs = await $.ajax({
-        url: '/profile/runs',
-        type: 'Get'
-    });
+    let runs;
+    try{
+        runs = await $.ajax({
+            url: '/profile/runs',
+            type: 'Get'
+        });
+    } catch (e) {
+        console.log(e);
+    }
     if(runs.runs && runs.runs.length > 0){
         for(let num = 0; num < runs.runs.length; num++){
             let data = {runs: runs.runs[num]._id}
             let runByGame = await $.ajax ({
-                url: 'game/gameName/',
+                url: '/game/gameName/',
                 type: 'Post',
                 data: data
         });
