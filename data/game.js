@@ -3,8 +3,6 @@ const {ObjectId} = require('mongodb');
 const users = mongoCollections.users;
 const usersData = require('./users');
 const games = mongoCollections.games;
-const gamesData = require('./games');
-const { game } = require('.');
 
 let exportedMethods = {
     async createRun(username, gameName, body, time,videoLink, tags){
@@ -15,7 +13,9 @@ let exportedMethods = {
         if(!videoLink) throw 'videoLink must be supplied!';
         if(!tags) throw 'tags must be supplied!';
         if(!body) throw 'body must be supplied!';
+        console.log(time);
         let t = Number(time);
+        console.log(t);
         if(typeof(username) != 'string') throw 'Username must be a string!';
         if(typeof(gameName) != 'string') throw 'gameName must be a string!';
         if(typeof(t) != 'number') throw 'Time must be an integer!';
@@ -104,11 +104,12 @@ let exportedMethods = {
         return {success: true, id: RunId, time: t, date: newRun.date};
     },
 
-    async getGameByRunId (runId) {
+    async getGameByRunId (id) {
         const gamesCollection = await games();
-        let holder = await gamesCollection.findOne({ runs: {$exists:  {_id: runId} }} );
-        holder = holder.name;
-        return holder;
+        const game = await gamesCollection.findOne({'runs._id':ObjectId(id)});
+        if(game === null) throw 'no run with that id';
+        let ret = game.name;
+        return ret;
     },
 
     async getAllRunsGame(gameName) {

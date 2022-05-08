@@ -57,17 +57,24 @@
                 type: 'Post',
                 data: runs.runs[num]._id
         });
-        let time = runs.runs[num].time.toString()[0]
-        time += runs.runs[num].time.toString()[1]
-        time += 'h'
-        time += runs.runs[num].time.toString()[2]
-        time += runs.runs[num].time.toString()[3]
-        time += 'm'
-        time += runs.runs[num].time.toString()[4]
-        time += runs.runs[num].time.toString()[5]
-        time += 's'
+        let totalTime = runs.runs[num].time;
+        let h = Math.floor(totalTime/3600);
+        let m = Math.floor((totalTime%3600)/60);
+        let s = totalTime%3600%60;
+
+        if(h<1){
+            h=0;
+            m = Math.floor(totalTime/60);
+            s = totalTime%60;
+        } 
+        else if(m<1&&h<1){
+            h = 0;
+            m = 0;
+            s = totalTime;
+        }
+        let t = h+"h "+m+"m "+s+"s";
         //${runs.runs[num].time}${runByGame}${runs.runs[num].date}
-            runsList.append(`<li><a href ="/runs/${runs.runs[num]._id}">${time}</a>  <a href="/game/${runByGame}">${runByGame}</a>   ${runs.runs[num].date}</li>`);
+            runsList.append(`<li><a href ="/runs/${runs.runs[num]._id}">${t}</a>  <a href="/game/${runByGame}">${runByGame}</a>   ${runs.runs[num].date}  [${runs.runs[num].tags}]</li>`);
         }
     } else {
         runsDiv.text('No runs yet');

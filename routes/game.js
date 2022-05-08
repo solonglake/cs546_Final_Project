@@ -58,7 +58,18 @@ router.post('/newRun', async (req, res) => {
         }
 
         if(status.success){
-            let runTime = runHour*3600 + runMin*60 + runSec;
+            console.log(runHour);
+            console.log(runMin);
+            console.log(runSec);
+            console.log(runHour*3600);
+            console.log(runMin*60);
+            console.log((runHour*3600)+(runMin*60)+14)
+            console.log(typeof(runSec));
+            let h = runHour*3600;
+            let m = runMin*60;
+
+            let runTime = (runHour*3600) + (runMin*60) + (runSec*1);
+            console.log(runTime);
             try{   
                 status = await runsData.createRun(xss(username), xss(gameName), xss(runBody), xss(runTime), xss(runVideo), tags);    
             } catch (e) {
@@ -72,13 +83,15 @@ router.post('/newRun', async (req, res) => {
     }
 });
 router.post('/gameName', async (req, res) => {
-    let holder = Object.keys(req.body);
-    let gameName = await runsData.getGameByRunId(holder[0]);
-    if (!gameName) {
-        res.status(400).json({ error: 'ID is missing' });
-        return;
+    let runId = req.body.runs;
+    let gamename;
+    try {
+        gamename = await runsData.getGameByRunId(runId);
+    } catch(e){
+        console.log(e); 
+        res.sendStatus(500);   
     }
-    res.json(gameName);
+    res.json(gamename);
 })
 router.get('/:id', async (req, res) => {
         let gamename = req.params.id;

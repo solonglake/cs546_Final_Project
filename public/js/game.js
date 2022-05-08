@@ -62,13 +62,13 @@
             data.datasets[0].data.push(fastestTime);
             data.labels.push(runs[id].date);
         }
-
-        let h = Math.floor(runs[id].time/3600)/10;
-        let m = Math.floor((runs[id].time%3600)/60)/10;
+        
+        let h = Math.floor(runs[id].time/3600);
+        let m = Math.floor((runs[id].time%3600)/60);
         let s = runs[id].time%3600%60;
         if(h<1){
             h=0;
-            m = Math.floor(totalTime/60)/10;
+            m = Math.floor(totalTime/60);
             s = totalTime%60;
         } 
         else if(m<1&&h<1){
@@ -156,13 +156,13 @@
                 data.labels.push(validRuns[id].date);
             }
 
-            let h = Math.floor(validRuns[id].time/3600)/10;
-            let m = Math.floor((validRuns[id].time%3600)/60)/10;
+            let h = Math.floor(validRuns[id].time/3600);
+            let m = Math.floor((validRuns[id].time%3600)/60);
             let s = validRuns[id].time%3600%60;
 
             if(h<1){
                 h=0;
-                m = Math.floor(totalTime/60)/10;
+                m = Math.floor(totalTime/60);
                 s = totalTime%60;
             } 
             else if(m<1&&h<1){
@@ -216,7 +216,9 @@
             runUser: runUser.val(),
             tags: tags
         };
-
+        console.log(data.runHour);
+        console.log(data.runMin);
+        console.log(data.runSec);
         // RunPost validation
         if(tags.length === 0){
             alert("ERROR: Please select a tag!");
