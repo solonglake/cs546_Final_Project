@@ -1,4 +1,116 @@
 // this function runs whenever the forum handlebars file is loaded
+async function deleteRun(runId, gameName){
+    const status = await $.ajax({
+        url: '/game/deleteRun',
+        type: 'Delete',
+        data: {runId: runId}
+    });
+    if(!status.success){
+        alert(status.error);
+    } else {
+        let runsList = $('#runsList');
+        runsList.empty();
+        let unverified = $('#unverified-runPost');
+        let runGame = $("h1").context.title;
+        let graphDiv = $('#graphDiv');
+        let graph = $('#graph');
+        graphDiv.empty();
+        graphDiv.append(`<canvas id="graph"></canvas>`);
+        graph = $('#graph');
+
+        //Determines if form can be shown based on the users authentification
+        let status = await $.ajax({
+            url: '/authenticated',
+            type: 'Post'
+        });
+        if(status.authenticated){
+            unverified.hide();
+        } else {
+            runPostForm.hide();
+        }
+        
+        //Pulls All Runs from game
+        let runs = await $.ajax({
+            url: '/game/getRuns',
+            type: 'Post',
+            data: {name: runGame}
+        });
+
+        // graph data
+        let data = {
+            labels: [],
+            datasets: [{
+                label: 'Run Speed Over Time (Seconds)',
+                data: [],
+                fill: false,
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1
+            }]
+        };
+
+        //Appends All runs Into runs Div
+        let fastestTime = Infinity;
+        for(id in runs){
+            let totalTime = runs[id].time;
+            if(totalTime < fastestTime){
+                fastestTime = totalTime;
+                data.datasets[0].data.push(fastestTime);
+                data.labels.push(runs[id].date);
+            }
+            
+            let h = Math.floor(runs[id].time/3600);
+            let m = Math.floor((runs[id].time%3600)/60);
+            let s = runs[id].time%3600%60;
+            if(h<1){
+                h=0;
+                m = Math.floor(totalTime/60);
+                s = totalTime%60;
+            } 
+            else if(m<1&&h<1){
+                h = 0;
+                m = 0;
+                s = totalTime;
+            }
+
+            let t = h+"h "+m+"m "+s+"s";
+            if(status.authenticated && status.username === runs[id].runUser){
+                runsList.append(
+                    `<div>
+                        <h2>
+                            <a href =/runs/${runs[id]._id}>${t}</a> by 
+                            <a href=/profileVisit/${runs[id].runUser}>${runs[id].runUser}</a> 
+                            on ${runs[id].date} [${runs[id].tags}]
+                            <button onclick="deleteRun('${runs[id]._id}', '${runGame}')">Delete Run</button>
+                        </h2>
+                    </div>`
+                );
+            } else {
+                runsList.append(`<div><h2><a href =/runs/${runs[id]._id}>${t}</a> by <a href=/profileVisit/${runs[id].runUser }>${runs[id].runUser}</a> on ${runs[id].date} [${runs[id].tags}]</h2></div>`);
+            }
+        }
+        if(runs.length === 0){
+            runsList.append('<p>There are currently no runs</p>');
+        }
+
+        // graph
+        let config = {
+            type: 'line',
+            data: data,
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        };
+        let myChart = new Chart(
+            graph,
+            config
+        );
+    }
+};
+
 (async function ($) {
     let unverified = $('#unverified-runPost');
     let runPostForm = $('#verified-runPost');
@@ -33,6 +145,8 @@
     } else {
         runPostForm.hide();
     }
+    let authenticated = status.authenticated;
+    let username = status.username;
     
     //Pulls All Runs from game
     let runs = await $.ajax({
@@ -78,7 +192,20 @@
         }
 
         let t = h+"h "+m+"m "+s+"s";
-        runsList.append(`<div><h2><a href =/runs/${runs[id]._id}>${t}</a> by <a href=/profileVisit/${runs[id].runUser }>${runs[id].runUser}</a> on ${runs[id].date} [${runs[id].tags}]</h2></div>`);
+        if(status.authenticated && status.username === runs[id].runUser){
+            runsList.append(
+                `<div>
+                    <h2>
+                        <a href =/runs/${runs[id]._id}>${t}</a> by 
+                        <a href=/profileVisit/${runs[id].runUser}>${runs[id].runUser}</a> 
+                        on ${runs[id].date} [${runs[id].tags}]
+                        <button onclick="deleteRun('${runs[id]._id}', '${runGame}')">Delete Run</button>
+                    </h2>
+                </div>`
+            );
+        } else {
+            runsList.append(`<div><h2><a href =/runs/${runs[id]._id}>${t}</a> by <a href=/profileVisit/${runs[id].runUser }>${runs[id].runUser}</a> on ${runs[id].date} [${runs[id].tags}]</h2></div>`);
+        }
     }
     if(runs.length === 0){
         runsList.append('<p>There are currently no runs</p>');
@@ -171,7 +298,20 @@
                 s = totalTime;
             }
             let t = h+"h "+m+"m "+s+"s";
-            runsList.append(`<div><h2><a href =/runs/${validRuns[id]._id}>${t}</a> by <a href=/profileVisit/${validRuns[id].runUser }>${validRuns[id].runUser}</a> on ${validRuns[id].date} [${validRuns[id].tags}]</h2></div>`);          
+            if(status.authenticated && status.username === validRuns[id].runUser){
+                runsList.append(
+                    `<div>
+                        <h2>
+                            <a href =/runs/${validRuns[id]._id}>${t}</a> by 
+                            <a href=/profileVisit/${validRuns[id].runUser}>${validRuns[id].runUser}</a> 
+                            on ${validRuns[id].date} [${validRuns[id].tags}]
+                            <button onclick="deleteRun('${validRuns[id]._id}', '${runGame}')">Delete Run</button>
+                        </h2>
+                    </div>`
+                );
+            } else {
+                runsList.append(`<div><h2><a href =/runs/${validRuns[id]._id}>${t}</a> by <a href=/profileVisit/${validRuns[id].runUser }>${validRuns[id].runUser}</a> on ${validRuns[id].date} [${validRuns[id].tags}]</h2></div>`);
+            }
         }
         if(validRuns.length === 0){
             let message = 'No Runs with Supplied Tags';
@@ -215,9 +355,6 @@
             runUser: runUser.val(),
             tags: tags
         };
-        console.log(data.runHour);
-        console.log(data.runMin);
-        console.log(data.runSec);
         // RunPost validation
         if(tags.length === 0){
             alert("ERROR: Please select a tag!");
@@ -260,7 +397,20 @@
             });
             if(status.success){
                 let t = data.runHour+"h "+data.runMin+"m "+data.runSec+"s";
-                runsList.append(`<div><h2><a href=/runs/${status.id}>${t}</a> by <a href=/profileVisit/${data.runUser}>${data.runUser}</a> on ${status.date} [${data.tags}]</h2></div>`);
+                if(authenticated && username === data.runUser){
+                    runsList.append(
+                        `<div>
+                            <h2>
+                                <a href =/runs/${status.id}>${t}</a> by 
+                                <a href=/profileVisit/${data.runUser}>${data.runUser}</a> 
+                                on ${status.date} [${data.tags}]
+                                <button onclick="deleteRun('${status.id}', '${runGame}')">Delete Run</button>
+                            </h2>
+                        </div>`
+                    );
+                } else {
+                    runsList.append(`<div><h2><a href =/runs/${status.id}>${t}</a> by <a href=/profileVisit/${data.runUser }>${data.runUser}</a> on ${status.date} [${data.tags}]</h2></div>`);
+                }
             } else {
                 runError.text(status.failure);
                 runError.show();

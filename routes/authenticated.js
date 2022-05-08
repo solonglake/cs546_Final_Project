@@ -6,10 +6,12 @@ router.post('/', async (req, res) => {
         let status;
         if(req.session.user) {
             status = true;
+            res.json({ authenticated: status, username: req.session.user.username});
+            return;
         } else {
             status = false;
+            res.json({ authenticated: status});
         }
-        res.json({ authenticated: status });
     } catch (e) {
         res.sendStatus(500);
     }
