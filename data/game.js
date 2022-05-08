@@ -13,9 +13,7 @@ let exportedMethods = {
         if(!videoLink) throw 'videoLink must be supplied!';
         if(!tags) throw 'tags must be supplied!';
         if(!body) throw 'body must be supplied!';
-        console.log(time);
         let t = Number(time);
-        console.log(t);
         if(typeof(username) != 'string') throw 'Username must be a string!';
         if(typeof(gameName) != 'string') throw 'gameName must be a string!';
         if(typeof(t) != 'number') throw 'Time must be an integer!';
@@ -93,9 +91,9 @@ let exportedMethods = {
         //Check if user has runs property, if not make it
         let userRun = user.runs;
         if(userRun){
-            userRun.push(newRun);
+            userRun.push(RunId.toString());
         } else {
-            userRun = [newRun];
+            userRun = [RunId.toString()];
         }
         usersCollection.updateOne(
             { username: username }, 

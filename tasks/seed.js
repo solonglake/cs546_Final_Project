@@ -3,6 +3,7 @@ const data = require('../data/');
 const users = data.users;
 const bcrypt = require('bcrypt');
 const games = data.games;
+const game = data.game;
 const forums = data.forums;
 const mongoCollections = require('../config/mongoCollections');
 const {ObjectId} = require('mongodb');
@@ -24,8 +25,6 @@ const main = async () => {
             runs: [],
             posts: []
         };
-	let post = {};
-	let finder = "";
 
 		const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         let token = '';
@@ -125,8 +124,6 @@ const main = async () => {
 	catch (e){
 		console.log("Connor didn't add");
 	}
-
-
 	//check users
 	try {await users.checkUser('generalkenobi', 'thenyouarelost')}
 	catch (e) {
@@ -180,7 +177,7 @@ const main = async () => {
 	catch (e) {
 		console.log("failed to make minecraft");
 	}
-	try {await games.createGame('https://upload.wikimedia.org/wikipedia/en/f/fa/Binding_of_isaac_header.jpg', 'TheBindingofIssac')}
+	try {await games.createGame('https://upload.wikimedia.org/wikipedia/en/f/fa/Binding_of_isaac_header.jpg', 'The Binding of Issac')}
 	catch (e) {
 		console.log('failed to make the binding of Issac');
 	}
@@ -188,20 +185,372 @@ const main = async () => {
 	catch (e) {
 		console.log("failed to make Terraria");
 	}
-	try {await games.createGame('https://png.pngitem.com/pimgs/s/184-1842460_flappy-bird-bird-png-transparent-png.png', 'FlappyBird')}
+	try {await games.createGame('https://png.pngitem.com/pimgs/s/184-1842460_flappy-bird-bird-png-transparent-png.png', 'Flappy Bird')}
 	catch (e) {
 		console.log("failed to make Flappy Bird");
 	}
-	try {await games.createGame('https://assets.nintendo.com/image/upload/c_fill,f_auto,q_auto,w_1200/v1/ncom/en_US/games/switch/c/castle-crashers-remastered-switch/hero', 'CastleCrashers')}
+	try {await games.createGame('https://assets.nintendo.com/image/upload/c_fill,f_auto,q_auto,w_1200/v1/ncom/en_US/games/switch/c/castle-crashers-remastered-switch/hero', 'Castle Crashers')}
 	catch (e) {
 		console.log("failed to make Castle Crashers");
 	}
-	try {await games.createGame('https://steamrip.com/wp-content/uploads/2021/08/hearts-of-iron-iv-free-download-preinstalled-steamrip.jpg.webp', "HeartsOfIron4")}
+	try {await games.createGame('https://steamrip.com/wp-content/uploads/2021/08/hearts-of-iron-iv-free-download-preinstalled-steamrip.jpg.webp', "Hearts Of Iron 4")}
 	catch (e) {
 		console.log("failed to make HOI 4");
 	}
 
 
+	
+
+	let idHolder;
+	try {
+		try{
+			idHolder = await game.createRun('generalkenobi', 'Castle Crashers', 'this run took 9 parsecs', 1757,"https://www.youtube.com/embed/pJOUCwf6-N4", ['Any%', 'Glitchless'] );
+		} catch(e){
+			console.log(e);
+		}
+		
+		try {
+		await game.newComment(idHolder.id.toString(), 'tristan', 'Nice run man');
+		} catch(e) {
+		console.log(e);
+		} try {
+			await game.newComment(idHolder.id.toString(), 'connor', 'I could do better');
+		} catch(e) {
+			console.log(e);
+		} try {
+			await game.newComment(idHolder.id.toString(), 'sebastian', 'No you couldnt');
+		} catch(e) {
+			console.log(e);
+		}
+		} catch (e) {
+			console.log(e);
+		}
+	try {
+		try{
+			idHolder = await game.createRun('tristan', 'Castle Crashers', 'Killed it ;)', 2091,'https://www.youtube.com/embed/QqtPAjOg2oU', ['Any%', 'Glitchless'] );
+		} catch(e){
+			console.log(e);
+		}
+		
+		try {
+			await game.newComment(idHolder.id.toString(), 'generalkenobi', 'bad run man');
+		} catch(e) {
+			console.log(e);
+		} try {
+			await game.newComment(idHolder.id.toString(), 'tristan', 'that was fine');
+		} catch(e) {
+			console.log(e);
+		} try {
+			await game.newComment(idHolder.id.toString(), 'sebastian', 'worst Ive seen');
+		} catch(e) {
+			console.log(e);
+		} 
+	} catch (e) {
+		console.log(e)
+		}
+	
+	try {
+		try{
+			idHolder = await game.createRun('isaac', 'Castle Crashers', 'Got stuck on some wood but went okay', 2220,'https://www.youtube.com/embed/utrzdYhS9Es', ['Any%', 'Blindfolded'] );
+		} catch(e){
+			console.log(e);
+		}
+		try {
+			await game.newComment(idHolder.id.toString(), 'generalkenobi', 'Nice run man');
+		} catch(e) {
+			console.log(e);
+		} try {
+			await game.newComment(idHolder.id.toString(), 'generalkenobi', 'I really liked it');
+		} catch(e) {
+			console.log(e);
+		} try {
+			await game.newComment(idHolder.id.toString(), 'generalkenobi', 'Like I loved it');
+		} catch(e) {
+			console.log(e);
+		}
+	} catch(e) {
+		console.log(e);
+	}
+	try {
+		try{
+			idHolder = await game.createRun('sebastian', 'Castle Crashers', '3rd princess is my favorite', 45521,'https://www.youtube.com/embed/YII_P5-3wfs', ['100%', 'Blindfolded'] );
+		} catch(e){
+			console.log(e);
+		}
+		try {
+			await game.newComment(idHolder.id.toString(), 'generalkenobi', 'Nice run man');
+		} catch(e) {
+			console.log(e);
+		}
+	}catch (e) {
+			console.log(e);
+		}
+		try {
+			idHolder = await game.createRun('connor', 'Castle Crashers', 'Orange Knight best knight', 2783,'https://www.youtube.com/embed/0Derj5N4Yrk', ['Any%', 'Glitchless'] );
+		}catch (e) {
+			console.log(e);
+		}
+		//populating Minecraft
+	try {
+		idHolder = await game.createRun('generalkenobi', 'Minecraft', 'this run took 10 parsecs', 2413,"https://www.youtube.com/embed/zePrYFb2NbI", ['Any%', 'Glitchless'] );
+	} catch(e) {
+		console.log(e);
+	}
+	try {
+		try{
+			idHolder = await game.createRun('connor', 'Minecraft', 'wheres the leak maam', 1203,'https://www.youtube.com/embed/f1jWqoyWobg', ['Any%', 'Glitchless'] );
+		} catch(e){
+			console.log(e);
+		}
+		try {
+			await game.newComment(idHolder.id.toString(), 'tristan', 'Nice run man');
+		} catch(e) {
+			console.log(e);
+		} try {
+			await game.newComment(idHolder.id.toString(), 'connor', 'I could do better');
+		} catch(e) {
+			console.log(e);
+		} try {
+			await game.newComment(idHolder.id.toString(), 'sebastian', 'No you couldnt');
+		} catch(e) {
+			console.log(e);
+		}
+	} catch(e) {
+		console.log(e);
+	}
+	try {
+		try{
+			idHolder = await game.createRun('tristan', 'Minecraft', 'Some BS happened here', 1243,'https://www.youtube.com/embed/srd17aD7P3Y', ['Any%', 'Glitchless'] );
+		} catch(e){
+			console.log(e);
+		}
+		try {
+			await game.newComment(idHolder.id.toString(), 'generalkenobi', 'bad run man');
+		} catch(e) {
+			console.log(e);
+		} try {
+			await game.newComment(idHolder.id.toString(), 'tristan', 'that was fine');
+		} catch(e) {
+			console.log(e);
+		} try {
+			await game.newComment(idHolder.id.toString(), 'sebastian', 'worst Ive seen');
+		} catch(e) {
+			console.log(e);
+		}
+	} catch(e) {
+		console.log(e);
+	}
+	try {
+		try{
+			idHolder = await game.createRun('isaac', 'Minecraft', 'Why did the dragon fly for so long?????', 4557,'https://www.youtube.com/embed/4EG2up-jcKM', ['Any%', 'Blindfolded'] );
+		} catch(e){
+			console.log(e);
+		}
+		
+		try {
+			await game.newComment(idHolder.id.toString(), 'generalkenobi', 'Nice run man');
+		} catch(e) {
+			console.log(e);
+		} try {
+			await game.newComment(idHolder.id.toString(), 'generalkenobi', 'I really liked it');
+		} catch(e) {
+			console.log(e);
+		} try {
+			await game.newComment(idHolder.id.toString(), 'generalkenobi', 'Like I loved it');
+		} catch(e) {
+			console.log(e);
+		}
+	} catch(e) {
+		console.log(e);
+	}
+	try {
+		try{
+			idHolder = await game.createRun('sebastian', 'Minecraft', 'I am a god', 5124,'https://www.youtube.com/embed/ET9n1aKzY-0', ['100%', 'Blindfolded'] );
+		} catch(e){
+			console.log(e);
+		}
+		try {
+			await game.newComment(idHolder.id.toString(), 'generalkenobi', 'Nice run man');
+		} catch(e) {
+			console.log(e);
+		}
+	} catch(e) {
+		console.log(e);
+	}
+
+	// populating  the binding of issac
+	try {
+		try{
+			idHolder = await game.createRun('connor', 'The Binding of Issac', 'Mom knife for the win', 1102,'https://www.youtube.com/embed/OfuEiF0iw3I', ['Any%', 'Glitchless'] );
+		} catch(e){
+			console.log(e);
+		}
+		try {
+			await game.newComment(idHolder.id.toString(), 'tristan', 'Nice run man');
+		} catch(e) {
+			console.log(e);
+		} try {
+			await game.newComment(idHolder.id.toString(), 'connor', 'I could do better');
+		} catch(e) {
+			console.log(e);
+		} try {
+			await game.newComment(idHolder.id.toString(), 'sebastian', 'No you couldnt');
+		} catch(e) {
+			console.log(e);
+		}
+	} catch(e) {
+		console.log(e);
+	}
+	try {
+		try {
+			idHolder = await game.createRun('tristan', 'The Binding of Issac', 'cursed eye couldnt stop this', 1002,'https://www.youtube.com/embed/LtVKALflhic', ['Any%', 'Glitchless'] );
+		} catch(e) {
+			console.log(e);
+		}
+		try {
+			await game.newComment(idHolder.id.toString(), 'generalkenobi', 'bad run man');
+		} catch(e) {
+			console.log(e);
+		} try {
+			await game.newComment(idHolder.id.toString(), 'tristan', 'that was fine');
+		} catch(e) {
+			console.log(e);
+		} try {
+			await game.newComment(idHolder.id.toString(), 'sebastian', 'worst Ive seen');
+		} catch(e) {
+			console.log(e);
+		}
+	} catch(e) {
+		console.log(e);
+	}
+	try {
+		try {
+			idHolder = await game.createRun('isaac', 'The Binding of Issac', 'Holy moly how did I survive that', 3458,'https://www.youtube.com/embed/XqOKFym_c0U', ['Any%', 'Blindfolded'] );
+		} catch(e) {
+			console.log(e);
+		}
+		try {
+			await game.newComment(idHolder.id.toString(), 'generalkenobi', 'Nice run man');
+		} catch(e) {
+			console.log(e);
+		} try {
+			await game.newComment(idHolder.id.toString(), 'generalkenobi', 'I really liked it');
+		} catch(e) {
+			console.log(e);
+		} try {
+			await game.newComment(idHolder.id.toString(), 'generalkenobi', 'Like I loved it');
+		} catch(e) {
+			console.log(e);
+		}
+	} catch(e) {
+		console.log(e);
+	}
+	try {
+		try {
+			idHolder = await game.createRun('sebastian', 'The Binding of Issac', 'I cannot believe they patched this now', 3500,'https://www.youtube.com/embed/r1mBhQoZDcI', ['100%', 'Blindfolded'] );
+		} catch(e) {
+			console.log(e);
+		}
+		
+		try {
+			await game.newComment(idHolder.id.toString(), 'generalkenobi', 'Nice run man');
+		} catch(e) {
+			console.log(e);
+		}
+	} catch(e) {
+		console.log(e);
+	}
+		//populating terraria
+
+	try {
+		try{
+			idHolder = await game.createRun('connor', 'Terraria', 'Guide is completely worthless', 4578,'https://www.youtube.com/embed/-jkVC43ofOM', ['Any%', 'Glitchless'] );
+		} catch(e){
+			console.log(e);
+		}
+		
+		try {
+			await game.newComment(idHolder.id.toString(), 'tristan', 'Nice run man');
+		} catch(e) {
+			console.log(e);
+		} try {
+			await game.newComment(idHolder.id.toString(), 'connor', 'I could do better');
+		} catch(e) {
+			console.log(e);
+		} try {
+			await game.newComment(idHolder.id.toString(), 'sebastian', 'No you couldnt');
+		} catch(e) {
+			console.log(e);
+		}
+	} catch(e) {
+		console.log(e);
+	}
+	try {
+		try {
+			idHolder = await game.createRun('tristan', 'Terraria', 'I am losing my mind to Plantera', 1247,'https://www.youtube.com/embed/ZTPrOnI9lFw', ['Any%', 'Glitchless'] );
+		} catch(e) {
+			console.log(e);
+		}
+		try {
+			await game.newComment(idHolder.id.toString(), 'generalkenobi', 'bad run man');
+		} catch(e) {
+			console.log(e);
+		} try {
+			await game.newComment(idHolder.id.toString(), 'tristan', 'that was fine');
+		} catch(e) {
+			console.log(e);
+		} try {
+			await game.newComment(idHolder.id.toString(), 'sebastian', 'worst Ive seen');
+		} catch(e) {
+			console.log(e);
+		}
+	} catch(e) {
+		console.log(e);
+	}
+	try {
+		try {
+			idHolder = await game.createRun('isaac', 'Terraria', 'Bully Mguire', 5567,'https://www.youtube.com/embed/j5D44ZysfU8', ['Any%', 'Blindfolded'] );
+		} catch(e) {
+			console.log(e);
+		}
+		try {
+			await game.newComment(idHolder.id.toString(), 'generalkenobi', 'Nice run man');
+		} catch(e) {
+			console.log(e);
+		} try {
+			await game.newComment(idHolder.id.toString(), 'generalkenobi', 'I really liked it');
+		} catch(e) {
+			console.log(e);
+		} try {
+			await game.newComment(idHolder.id.toString(), 'generalkenobi', 'Like I loved it');
+		} catch(e) {
+			console.log(e);
+		}
+	} catch(e) {
+		console.log(e);
+	}
+	//purposefull error check
+	try {
+		try {
+			await game.createRun('Sebastian', 'Terraria', 'Queen bee is terrifying', 3248,'https://www.youtube.com/embed/lZqrCof1Sjc', ['100%', 'Blindfolded'] );
+		} catch(e) {
+			console.log(e);
+		}
+		try {
+			await game.createRun('sebastian', 'Terraria', '', 4588,'https://www.youtube.com/embed/lZqrCof1Sjc', ['100%', 'Blindfolded'] );
+		} catch(e) {
+			console.log(e);
+		}
+	 
+	try {
+		idHolder = await game.createRun('generalKenobi', 'Flappy Bird','I got so far', 4568,"https://www.youtube.com/embed/O5VYqv6Fyec", ['Blindfolded', 'Glitchless'] );
+	}
+	catch (e) {
+		console.log(e);
+	}
+	} catch(e) {
+		console.log(e);
+	}
 
 	console.log('Done seeding database');
 	await dbConnection.closeConnection();

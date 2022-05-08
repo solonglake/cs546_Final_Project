@@ -98,7 +98,6 @@ router.get('/:id', async (req, res) => {
             return;
         }
     
-    try {
         await gamesData.getGame(xss(gamename));
         if(req.session.user){
             res.render('partials/game', {title:gamename, name:gamename,username: req.session.user.username,js: 'game.js'});
@@ -109,6 +108,7 @@ router.get('/:id', async (req, res) => {
     }catch (e) {
         res.sendStatus(500);
     }
+    
 });
 
 router.delete('/deleteRun', async (req, res) => {
