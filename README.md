@@ -4,8 +4,8 @@ Welcome to Split.com, we are a group of developers that are passionate about vid
 
 To start the website simply download the repository and run the following commands in your terminal.
 
-npm install
-npm run seed
+npm install,
+npm run seed,
 npm start
 
 Please note that seeding the database may take a minute or two as there is a lot of data and encryption that needs to occur.
