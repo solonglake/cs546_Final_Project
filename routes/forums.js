@@ -25,19 +25,18 @@ router.get('/posts/:id', async (req, res) => {
         post.comments = await forumsData.formatComments(req.params.id);
         post.title = md.render(post.title);
         post.body = md.render(post.body);
-        let userId = await forumsData.checkId(post.userId.toString());
-        let postUser = await usersData.getUsername(userId);
+        let userId = await forumsData.checkId(xss(post.userId.toString()));
+        let postUser = await usersData.getUsername(xss(userId));
         let hasComments = true;
         if(post.comments.length == 0){
             hasComments = false;
         }
         if(req.session.user) {
-            res.render('partials/post', { title: 'Forums',js: 'post.js',username: xss(req.session.user.username), post: post, postUser: postUser, comments: post.comments, hasComments: hasComments});
+            res.render('partials/post', { title: 'Forums',js: 'post.js',username: xss(req.session.user.username), post: post, postUser: xss(postUser), comments: xss(post.comments), hasComments: hasComments});
         } else {
-            res.render('partials/post', { title: 'Forums',js: 'post.js', post: post, postUser: postUser, comments: post.comments, hasComments: hasComments});
+            res.render('partials/post', { title: 'Forums',js: 'post.js', post: post, postUser: xss(postUser), comments: xss(post.comments), hasComments: hasComments});
         }
     } catch (e) {
-        console.log(e);
         res.sendStatus(500);
     }
 });
@@ -47,7 +46,6 @@ router.get('/posts', async (req, res) => {
         try{
             posts = await forumsData.getAll();    
             } catch(e){
-                console.log(e);
             }
         res.json(posts)
     } catch (e) {
@@ -74,6 +72,25 @@ router.post('/newPost', async (req, res) => {
     }
 });
 
+router.post('/getComments', async (req, res) => {
+    let postId = req.body.postId;
+    if(!postId){
+        res.status(400).json({error:'ID is missing'});
+        return;
+    }
+    if(typeof(postId)!='string' || postId.trim()===0){
+        res.status(400).json({ error: 'ID has to be a non-empty string' });
+        return;
+    }
+    try {
+        let comments = await forumsData.formatComments(postId);
+        res.json({comments: comments});
+    } catch(e){
+        console.log(e);
+        res.sendStatus(500);
+    }
+});
+
 router.post('/newComment', async (req, res) => {
     try {
         let postId = req.body.postId;
@@ -86,12 +103,10 @@ router.post('/newComment', async (req, res) => {
         try{
         status = await forumsData.createComment(xss(postId), xss(commentBody),xss(commentUser));    
         } catch(e){
-            console.log(e);
             res.sendStatus(500);
         }
         res.json(status);
     } catch (e) {   
-        console.log(e);  
         res.sendStatus(500);
     }
 });
