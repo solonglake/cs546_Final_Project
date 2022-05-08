@@ -82,6 +82,7 @@ router.post('/newRun', async (req, res) => {
         res.sendStatus(500);
     }
 });
+
 router.post('/gameName', async (req, res) => {
     let runId = req.body.runs;
     let gamename;
@@ -92,25 +93,45 @@ router.post('/gameName', async (req, res) => {
         res.sendStatus(500);   
     }
     res.json(gamename);
-})
+});
+
 router.get('/:id', async (req, res) => {
-        let gamename = req.params.id;
-    if (!gamename) {
-        res.status(400).json({ error: 'ID is missing' });
-        return;
-    }
-    if(typeof(gamename)!='string' || gamename.trim()===0){
-        res.status(400).json({ error: 'game name has to be a non-empty string' });
-        return;
-    }
-    
     try {
+        let gamename = req.params.id;
+        if (!gamename) {
+            res.status(400).json({ error: 'ID is missing' });
+            return;
+        }
+        if(typeof(gamename)!='string' || gamename.trim()===0){
+            res.status(400).json({ error: 'game name has to be a non-empty string' });
+            return;
+        }
+    
         await gamesData.getGame(gamename);
         if(req.session.user){
             res.render('partials/game', {title:gamename, name:gamename,username: req.session.user.username,js: 'game.js'});
         }
         else{
             res.render('partials/game', {title:gamename, name:gamename,js: 'game.js'});
+        }
+    }catch (e) {
+        res.sendStatus(500);
+    }
+});
+
+router.delete('/deleteRun', async (req, res) => {
+    try {
+        let runId = req.body.runId;
+        if (!runId) {
+            res.status(400).json({success: false, error: 'runId not supplied!'});
+            return;
+        }
+
+        try{
+            await runsData.deleteRun(runId);
+            res.json({success: true});
+        } catch (e) {
+            res.status(400).json({success: false, error: e});
         }
     }catch (e) {
         res.sendStatus(500);
