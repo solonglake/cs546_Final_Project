@@ -50,6 +50,9 @@ async function deleteRun(runId, gameName){
 
         //Appends All runs Into runs Div
         let fastestTime = Infinity;
+        runs.sort(function(a, b) {
+            return b.time - a.time;
+        });
         for(id in runs){
             let totalTime = runs[id].time;
             if(totalTime < fastestTime){
@@ -169,6 +172,9 @@ async function deleteRun(runId, gameName){
 
     //Appends All runs Into runs Div
     let fastestTime = Infinity;
+    runs.sort(function(a, b) {
+        return b.time - a.time;
+    });
     for(id in runs){
         let totalTime = runs[id].time;
         if(totalTime < fastestTime){
@@ -275,6 +281,9 @@ async function deleteRun(runId, gameName){
             }]
         };
         fastestTime = Infinity;
+        validRuns.sort(function(a, b) {
+            return b.time - a.time;
+        });
         for(id in validRuns){
             let totalTime = validRuns[id].time;
             if(totalTime < fastestTime){
