@@ -123,3 +123,13 @@ a:hover {
 #format {
 	all:unset;
 }
+
+#profilePic {
+	width: 300px;
+	height: 300px;
+}
+
+.gamePic {
+	width: 300px;
+	height: 300px;
+}

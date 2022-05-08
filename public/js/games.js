@@ -14,7 +14,7 @@
     });
     if(games){
         for(let i=0; i<games.length; i++){
-            let img = $(`<a href="/game/${games[i].name}"><img src=${games[i].gamePic} alt=${games[i].name}></a>`);
+            let img = $(`<a href="/game/${games[i].name}"><img src=${games[i].gamePic} class=gamePic alt=${games[i].name}></a>`);
             let p = $(`<p>${games[i].name}</p>`);
             let article = $('<article></article>');
             article.append(img);
@@ -70,7 +70,7 @@
                 data: data
             });
             if(added.success){
-                let img = $(`<a href="/game/${data.gameNameInput}"><img src=${data.gamePicInput} alt=${data.gameNameInput}></a>`);
+                let img = $(`<a href="/game/${data.gameNameInput}"><img src=${data.gamePicInput} class=gamePic alt=${data.gameNameInput}></a>`);
                 let p = $(`<p>${data.gameNameInput}</p>`);
                 let article = $('<article></article>');
                 article.append(img);

@@ -322,9 +322,12 @@ let exportedMethods = {
 
         // Make Database Query For Matching RunID
         const gamesCollection = await games();
+        let commentId = new ObjectId();
+        let today = new Date();
+        let date = (today.getMonth()+1)+'-'+today.getDate()+'-'+today.getFullYear();
         let result = await gamesCollection.updateOne(
             { "runs._id": ObjectId(runId) },
-            { "$push": {"runs.$.comments": {username: username, comment: comment}}});
+            { "$push": {"runs.$.comments": {_id: commentId, username: username, date: date, comment: comment}}});
         if(result.modifiedCount != 0) {
             return {username: username, comment: comment};
         } else {
